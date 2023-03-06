@@ -10,6 +10,8 @@
             integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65"
             crossorigin="anonymous"
         />
+
+        <script src="https://unpkg.com/cytoscape@3.10.0/dist/cytoscape.min.js"></script>
         <link rel="stylesheet" href="style.css" />
     </head>
     <body>
@@ -33,9 +35,9 @@
                         <li class="nav-item">
                             <a
                                 class="nav-link text-white bg-dark"
-                                href="/graph.html"
+                                href="/testing.html"
                             >
-                                Graph UI Test</a
+                                temp test page</a
                             >
                         </li>
                         <li class="nav-item">
@@ -54,54 +56,61 @@
 
         <!-- Body   -->
         <div class="container mb-5">
-            <h4 class="mb-3">
-                Select an algorithm to display the shorthest path
-            </h4>
-            <div class="mb-3">
-                <label for="dropdown" class="form-label"
-                    >Choose a Routing Algorithm</label
-                >
-                <select class="form-select" id="dropdown">
-                    <option value="1">Dijkstra's algorithm</option>
-                    <option value="2">Distance-vector algorithm</option>
-                </select>
+            <div>
+                <h4 class="mb-3">
+                    Select an algorithm to display the shorthest path
+                </h4>
+                <div class="mb-3">
+                    <label for="dropdown" class="form-label"
+                        >Choose a Routing Algorithm</label
+                    >
+                    <select class="form-select" id="dropdown">
+                        <option value="1">Dijkstra's algorithm</option>
+                        <option value="2">Distance-vector algorithm</option>
+                    </select>
 
-                <!-- <div class="d-flex justify-content-between align-items-center">
-                    <div class="dropdown">
-                        <div class="btn-group">
-                            <button
-                                type="button"
-                                class="btn btn-secondary dropdown-toggle"
-                                data-bs-toggle="dropdown"
-                                data-bs-display="static"
-                                aria-expanded="false"
-                            >
-                                Choose a Routing Algorithm
+                    <!-- <div class="d-flex justify-content-between align-items-center">
+                            <div class="dropdown">
+                                <div class="btn-group">
+                                    <button
+                                        type="button"
+                                        class="btn btn-secondary dropdown-toggle"
+                                        data-bs-toggle="dropdown"
+                                        data-bs-display="static"
+                                        aria-expanded="false"
+                                    >
+                                        Choose a Routing Algorithm
+                                    </button>
+        
+                                    <ul class="dropdown-menu dropdown-menu-lg-end">
+                                        <li>
+                                            <button class="dropdown-item" type="button">
+                                                Dijkstra's algorithm
+                                            </button>
+                                        </li>
+                                        <li>
+                                            <button class="dropdown-item" type="button">
+                                                Distance-vector algorithm
+                                            </button>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-dark">
+                                Find Route
                             </button>
+                        </div> -->
+                </div>
+            </div>
 
-                            <ul class="dropdown-menu dropdown-menu-lg-end">
-                                <li>
-                                    <button class="dropdown-item" type="button">
-                                        Dijkstra's algorithm
-                                    </button>
-                                </li>
-                                <li>
-                                    <button class="dropdown-item" type="button">
-                                        Distance-vector algorithm
-                                    </button>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                    <button type="button" class="btn btn-dark">
-                        Find Route
-                    </button>
-                </div> -->
-            </div>
-            <div class="default-graph">
-                <!-- <img src="https://source.unsplash.com/random/1256x500" /> -->
-                <img src="/img/DefaultGraph1_1200x700.svg" />
-            </div>
+            <!-- Graph using CytoScape -->
+            <div
+                id="cy"
+                class="rounded border border-dark"
+                id="container"
+                style="height: 550px; width: 100%"
+            ></div>
+            <script src="cytoscape.js"></script>
 
             <br />
             <br />
@@ -117,27 +126,14 @@
                 vel sagittis neque. Nunc pharetra id sapien id hendrerit.
                 Vivamus ullamcorper fermentum sem in mollis. Nullam nec magna
                 rutrum est pharetra interdum et at sem. Ut vel nisi sit amet
-                orci semper sollicitudin vel non leo. Donec quis nunc facilisis,
-                tempus metus eget, facilisis magna. Aliquam et condimentum nunc.
-                Donec sodales auctor ante, et consectetur augue ultricies ac.
-                Donec non luctus nibh, et porta ligula. Suspendisse sed ultrices
-                mi. Donec vel purus nec augue volutpat finibus. Maecenas
-                ullamcorper arcu elit, quis dictum arcu malesuada vel. Nullam
-                vehicula arcu ut mauris elementum, eu placerat nulla pharetra.
-                Phasellus ut eros non orci dapibus dignissim. Ut ut pellentesque
-                lorem. Class aptent taciti sociosqu ad litora torquent per
-                conubia nostra, per inceptos himenaeos. Nam nunc lectus,
-                pellentesque id purus sit amet, facilisis finibus tortor. Etiam
-                massa dolor, auctor et lorem in, rhoncus blandit dolor. Duis sed
-                justo turpis. Ut non dictum ante, placerat porttitor nunc. Nam
-                tempus libero a aliquet bibendum. Phasellus pellentesque tortor
-                eget ex tincidunt vehicula.
+                orci semper sollicitudin vel non leo. Donec quis nunc facilisis.
             </p>
         </div>
 
         <!-- Footer -->
         <footer class="text-center py-3">
-            <p>&copy; 2021 My Company. All Rights Reserved.</p>
+            <br />
+            <p>&copy; 2023. All Rights Reserved.</p>
         </footer>
 
         <!-- Bootstrap JS -->
