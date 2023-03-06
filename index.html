@@ -31,6 +31,14 @@
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav ms-auto">
                         <li class="nav-item">
+                            <a
+                                class="nav-link text-white bg-dark"
+                                href="/graph.html"
+                            >
+                                Graph UI Test</a
+                            >
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link" href="#">How to Use</a>
                         </li>
                         <li class="nav-item">
@@ -44,25 +52,59 @@
             </div>
         </nav>
 
-        <!-- Bod y   -->
+        <!-- Body   -->
         <div class="container mb-5">
             <h4 class="mb-3">
                 Select an algorithm to display the shorthest path
             </h4>
             <div class="mb-3">
-                <label for="dropdown" class="form-label"
+                <!-- <label for="dropdown" class="form-label"
                     >Choose a Routing Algorithm</label
                 >
                 <select class="form-select" id="dropdown">
                     <option value="1">Dijkstra's algorithm</option>
-                    <option value="2">Distance-vector</option>
-                </select>
-            </div>
+                    <option value="2">Distance-vector algorithm</option>
+                </select> -->
 
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="dropdown">
+                        <div class="btn-group">
+                            <button
+                                type="button"
+                                class="btn btn-secondary dropdown-toggle"
+                                data-bs-toggle="dropdown"
+                                data-bs-display="static"
+                                aria-expanded="false"
+                            >
+                                Choose a Routing Algorithm
+                            </button>
+
+                            <ul class="dropdown-menu dropdown-menu-lg-end">
+                                <li>
+                                    <button class="dropdown-item" type="button">
+                                        Dijkstra's algorithm
+                                    </button>
+                                </li>
+                                <li>
+                                    <button class="dropdown-item" type="button">
+                                        Distance-vector algorithm
+                                    </button>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-dark">
+                        Find Route
+                    </button>
+                </div>
+            </div>
+            <br />
             <div class="default-graph">
-                <img src="https://source.unsplash.com/random/1256x500" />
+                <!-- <img src="https://source.unsplash.com/random/1256x500" /> -->
+                <img src="/img/DefaultGraph1.svg" />
             </div>
 
+            <br />
             <br />
             <p class="info">
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam
@@ -101,10 +143,9 @@
 
         <!-- Bootstrap JS -->
         <script
-            src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.0/js/bootstrap.min.js"
-            integrity="sha512-+px7cK4yIbV7s/ieZYnSoRtEiZt8uYQX9D3kq1zKxwJl8vzv+ciF+T0dV7S8SIPX9J7g+I1xKz7gm4w4GJl7ug=="
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
             crossorigin="anonymous"
-            referrerpolicy="no-referrer"
         ></script>
     </body>
 </html>
