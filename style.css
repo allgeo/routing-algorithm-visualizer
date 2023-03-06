@@ -1,0 +1,24 @@
+body {
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    max-width: 1280px;
+    margin: 0 auto;
+}
+
+.navbar {
+    height: 100px;
+}
+
+footer {
+    height: 100px;
+    background-color: #e7e7e7;
+    align-items: center;
+    justify-content: center;
+    margin-top: auto;
+}
+
+footer .container {
+    text-align: center;
+}
