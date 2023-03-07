@@ -114,19 +114,23 @@
 
             <br />
             <br />
+            <h4>General note (for group members)</h4>
             <p class="info">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam
-                orci metus, sollicitudin at metus non, consequat suscipit elit.
-                Morbi varius sem et efficitur pretium. In in felis id metus
-                posuere sagittis ac ac neque. Ut scelerisque quis dolor eu
-                cursus. Nunc consequat porttitor viverra. Aliquam ut neque
-                scelerisque, commodo ligula nec, varius lacus. Ut velit sem,
-                ullamcorper vitae semper sed, vulputate gravida lorem. Proin
-                pretium ante nec neque vehicula, a eleifend nisi sodales. Nulla
-                vel sagittis neque. Nunc pharetra id sapien id hendrerit.
-                Vivamus ullamcorper fermentum sem in mollis. Nullam nec magna
-                rutrum est pharetra interdum et at sem. Ut vel nisi sit amet
-                orci semper sollicitudin vel non leo. Donec quis nunc facilisis.
+                Although the graph alter its orientation everytime you refresh,
+                all the nodes, edges and weights are the same. And there is a
+                way to make the graph static using cytoscape. <br />
+                <br />
+                The edges are weighted and the nodes are labeled with their
+                names. You can acesses and update each node using the cytoscape
+                API. For example, to change the weight of the edge between node
+                n1 and node n2, usinng the following code: <br />
+                <br />
+                <code>cy.$('#n1n2').data('weight', 10);</code> <br />
+                <br />
+
+                Could have a seperate input boxes for each of the edges, then
+                update the edges using the cytoscape API once user submits the
+                form. <br />
             </p>
         </div>
 
