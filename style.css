@@ -10,7 +10,7 @@ body {
 .navbar {
     height: 100px;
 }
-/* style for cytoscape */
+/* style for cytoscape graph */
 #cy {
     width: 300px;
     height: 300px;

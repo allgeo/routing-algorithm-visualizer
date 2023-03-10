@@ -237,25 +237,52 @@
                 <br />
             </div>
 
-            <br />
-            <h5>General note (for group members)</h5>
-            <p class="info">
-                Although the graph alter its orientation everytime you refresh,
-                all the nodes, edges and weights are the same. And there is a
-                way to make the graph static using cytoscape. <br />
-                <br />
-                The edges are weighted and the nodes are labeled with their
-                names. You can acesses and update each node using the cytoscape
-                API. For example, to change the weight of the edge between node
-                n1 and node n2, usinng the following code: <br />
-                <br />
-                <code>cy.$('#n1n2').data('weight', 10);</code> <br />
-                <br />
+            <br /><br />
 
-                Could have a seperate input boxes for each of the edges, then
-                update the edges using the cytoscape API once user submits the
-                form. <br />
-            </p>
+            <div class="rounded border">
+                <div class="mx-5 my-5">
+                    <h5>Update as of March 9th, 2023 (for group members)</h5>
+                    <br />
+                    <h6>Whats Done</h6>
+
+                    <ul>
+                        <li>
+                            Uses <code>cytoscapes.js</code> to generate graph
+                            and manupulate it.
+                        </li>
+                        <li>
+                            I also used Bootstrap 5.2 to for styling and
+                            components
+                        </li>
+
+                        <li>
+                            Users are able to update the graph wights using the
+                            input field, then pressing by submit button.
+                        </li>
+                        <li>
+                            The submitted weight data is presistant as its
+                            stored in browser local storage. Essentially,
+                            refreshing the page will keep the data. ( As long as
+                            the browser cache isn't cleared, the data will be
+                            kept)
+                        </li>
+                    </ul>
+                    <h6>Whats Left</h6>
+                    <ul>
+                        <li>
+                            Whenever you refresh the page, the orientation of
+                            the graph changes (but all the nodes and edges are
+                            same). There is a way to hardcode each node to a set
+                            point using cytoscape but still need to do that
+                        </li>
+                        <li>
+                            The "Choose a Routing Algorithm" dropdown isnt
+                            functional, since we havent inplement the algorithm
+                            for it it.
+                        </li>
+                    </ul>
+                </div>
+            </div>
         </div>
 
         <!-- Footer -->
