@@ -4,6 +4,7 @@
         <meta charset="UTF-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Cytoscape Documentation</title>
         <link
             href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
             rel="stylesheet"
@@ -12,14 +13,13 @@
         />
 
         <script src="https://unpkg.com/cytoscape@3.10.0/dist/cytoscape.min.js"></script>
-
         <link rel="stylesheet" href="style.css" />
     </head>
     <body>
         <!-- Header -->
         <nav class="navbar navbar-expand-md">
             <div class="container-fluid">
-                <a class="navbar-brand" href="#">My Logo</a>
+                <a class="navbar-brand" href="/"><b>Website Name </b> </a>
                 <button
                     class="navbar-toggler"
                     type="button"
@@ -34,14 +34,6 @@
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav ms-auto">
                         <li class="nav-item">
-                            <a
-                                class="nav-link text-white bg-dark"
-                                href="/index.html"
-                            >
-                                Home</a
-                            >
-                        </li>
-                        <li class="nav-item">
                             <a class="nav-link" href="#">How to Use</a>
                         </li>
                         <li class="nav-item">
@@ -50,31 +42,32 @@
                         <li class="nav-item">
                             <a class="nav-link" href="#">About Us</a>
                         </li>
-                    </ul>
+
                 </div>
             </div>
         </nav>
 
         <!-- Body   -->
-        <!-- <div
-            class="rounded border border-dark"
-            id="container"
-            style="height: 550px"
-        ></div> -->
-
-        <!-- Graph using CytoScape -->
-        <div
-            id="cy"
-            class="rounded border border-dark"
-            id="container"
-            style="height: 550px; width: 100%"
-        ></div>
-        <script src="cytoscape.js"></script>
+        <div class="container mb-5">
+            <br />
+            <h4>Using <a href="http://"></a> <code>Cytoscape.js</code> </h4>
+            <br>
+            <p class="info">
+                Cytoscape.js is a free, open-source JavaScript library for
+                visualizing complex networks. It is designed to be easy to use,
+                fast, and fully customizable. Cytoscape.js is built on top of
+                jQuery and uses HTML5 Canvas for rendering.
+            </p>
+        </div>
 
         <!-- Footer -->
         <footer class="text-center py-3">
-            <p>&copy; 2021 My Company. All Rights Reserved.</p>
+            <br />
+            <p>&copy; 2023. All Rights Reserved.</p>
         </footer>
+
+        <!-- Cytoscape script to generate the graph -->
+        <script src="cytoscape.js"></script>
 
         <!-- Bootstrap JS -->
         <script
