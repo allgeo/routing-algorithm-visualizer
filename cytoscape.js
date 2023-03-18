@@ -103,3 +103,104 @@ edges.forEach(function (edge) {
         document.getElementById(edge.weightInputId).value = storedWeight;
     }
 });
+
+
+//get neighbours of vertex
+function getNeighbours(node) {
+    let output = []
+    edges.forEach((edge) => {
+        if(cy.$(edge.edgeId).data().source === node) {
+            output.push(cy.$(edge.edgeId).data().target)
+        } else if (cy.$(edge.edgeId).data().target === node) {
+            output.push(cy.$(edge.edgeId).data().source)
+        }
+    })
+    return output;
+}
+
+//get vertices of graph
+function getVertices() {
+    let output = []
+    cy.$().nodes().map((node) => {
+        output.push(node.id());
+    })
+
+    return output;
+}
+
+//get neighbours of all vertices
+function getNeighboursForEachVertex(vertices) {
+    let output = {}
+    vertices.forEach((vertex) => {
+        let neigbhours = getNeighbours(vertex);
+        output[vertex] = neigbhours
+    })
+
+    return output;
+}
+
+function initializeCostMatrix(vertices) {
+    
+    let costmatrix = {}
+    let infinity = Math.pow(10,1000)
+
+    //add neighbours to distance vector for each vertex
+    vertices.forEach((vertex) => {
+        let distanceVector = {}
+
+
+        edges.forEach((edge) => {
+            let distanceVectorEntry = {}
+
+            if(cy.$(edge.edgeId).data().source === vertex) {
+                let targetVertex = cy.$(edge.edgeId).data().target
+                distanceVectorEntry['cost'] = Number(cy.$(edge.edgeId).data().weight)
+                distanceVectorEntry['hop'] = targetVertex
+                distanceVector[targetVertex] = distanceVectorEntry
+
+            } else if (cy.$(edge.edgeId).data().target === vertex) {
+                let sourceVertex = cy.$(edge.edgeId).data().source 
+                distanceVectorEntry['cost'] = Number(cy.$(edge.edgeId).data().weight)
+                distanceVectorEntry['hop'] = sourceVertex
+                distanceVector[sourceVertex] = distanceVectorEntry
+            }
+        })
+
+
+        distanceVector['changed'] = true
+        costmatrix[vertex] = distanceVector
+
+
+    })
+
+    //add vertices that are not neighbours
+    Object.keys(costmatrix).forEach((key) => {
+        let distanceVector = costmatrix[key]
+
+        vertices.forEach((vertex) => {
+            if(distanceVector[vertex] === undefined && vertex === key) {
+                let distanceVectorEntry = {'cost': 0, 'hop': null, 'changed':true}
+                distanceVector[vertex] = distanceVectorEntry
+            } else if (distanceVector[vertex] === undefined) {
+                let distanceVectorEntry = {'cost': infinity, 'hop': null, 'changed':true}
+                distanceVector[vertex] = distanceVectorEntry
+            }
+        })
+
+
+        
+        
+    })
+
+
+
+
+    return costmatrix;
+}
+
+let vertices = getVertices()
+neigbhours = getNeighboursForEachVertex(vertices)
+let costmatrix = initializeCostMatrix(vertices)
+console.log(costmatrix)
+//console.log(getNeighboursForEachVertex(getVertices()));
+//console.log(cy.$().nodes().map((x) => console.log(x.id())))
