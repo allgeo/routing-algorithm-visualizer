@@ -18,6 +18,15 @@ var cy = (window.cy = cytoscape({
                 "text-rotation": "autorotate",
             },
         },
+        {
+            selector: "edge.highlighted",
+            css: {
+              "line-color": "red",
+              "target-arrow-color": "red",
+              "source-arrow-color": "red",
+              "z-index": 100
+            }
+          },
     ],
 
     elements: {
@@ -180,6 +189,30 @@ function dvAlgo(graph, startNode, endNode) {
     // Return path and distance
     return { path, distance: distances.get(endNode) };
   }
+
+
+  function highlightPath(path) {
+    cy.elements().removeClass("highlighted");
+
+    //Add highlight class to each edge in the path
+    for (let i = 0; i < path.length - 1; i++) {
+      let edge = cy.$("#" + path[i] + path[i + 1]);
+      edge.addClass("highlighted");
+    }
+  }
+
+  
+  function unhighlightEdges() {
+    // Remove the "highlighted" class from all edges
+    cy.edges().removeClass("highlighted");
+  }
+  
+  // Test highlight
+  let path = ["n0", "n1", "n2", "n7", "n9"];
+  highlightPath(path);
+
+  //unhighlightEdges();
+
 
 
   // Create graph
