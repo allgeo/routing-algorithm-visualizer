@@ -104,3 +104,101 @@ edges.forEach(function (edge) {
         document.getElementById(edge.weightInputId).value = storedWeight;
     }
 });
+
+
+class GraphAdjacencyList {
+    constructor() {
+        this.nodes = new Map();
+    }
+
+    addNode(node) {
+        if (!this.nodes.has(node)) {
+            this.nodes.set(node, []);
+        }
+    }
+
+    addEdge(node1, node2, weight) {
+        if (this.nodes.has(node1) && this.nodes.has(node2)) {
+            this.nodes.get(node1).push({ node: node2, weight: weight });
+            this.nodes.get(node2).push({ node: node1, weight: weight });
+        }
+    }
+
+    // Print the graph in adjacency list format for visualization in console
+    printGraph() {
+        for (const [node, edges] of this.nodes.entries()) {
+            const connections = edges
+                .map((edge) => `${edge.node}(${edge.weight})`)
+                .join(", ");
+            console.log(`${node} -> ${connections}`);
+        }
+    }
+}
+
+
+function dvAlgo(graph, startNode, endNode) {
+    // Create distance and previous maps
+    const distances = new Map();
+    const previous = new Map();
+
+    // Set the distance to the source node to 0 and all other nodes to infinity
+    for (const node of graph.nodes.keys()) {
+      distances.set(node, Infinity);
+      previous.set(node, null);
+    }
+    distances.set(startNode, 0);
+  
+    // Run distance-vector algorithm
+    let updated = true;
+    // Repeatedly update the distances until they converge
+    while (updated) {
+      updated = false;
+      // Loop through each node in the graph
+      for (const [node, edges] of graph.nodes.entries()) {
+        // Loop through each neighboring node of the current node
+        for (const edge of edges) {
+        // Calculate the distance to the neighboring node via the current node
+          const distance = distances.get(node) + edge.weight;
+           // If the new distance is shorter than the current distance to the neighboring node, update the distances map and previous nodes map
+          if (distance < distances.get(edge.node)) {
+            distances.set(edge.node, distance);
+            previous.set(edge.node, node);
+            updated = true;
+          }
+        }
+      }
+    }
+  
+     // Build the shortest path from the source node to the destination node by following the previous nodes map
+    const path = [];
+    let current = endNode;
+    while (current !== null) {
+      path.unshift(current);
+      current = previous.get(current);
+    }
+  
+    // Return path and distance
+    return { path, distance: distances.get(endNode) };
+  }
+
+
+  // Create graph
+const graph = new GraphAdjacencyList();
+graph.addNode("A");
+graph.addNode("B");
+graph.addNode("C");
+graph.addNode("D");
+graph.addNode("E");
+graph.addEdge("A", "B", 1);
+graph.addEdge("A", "C", 5);
+graph.addEdge("B", "C", 3);
+graph.addEdge("B", "E", 9);
+graph.addEdge("C", "D", 4);
+graph.addEdge("D", "E", 2);
+
+
+// Find shortest path between A and E
+const result = dvAlgo(graph, "C", "E");
+console.log(result)
+console.log(`Shortest path: ${result.path.join(" -> ")}`);
+console.log(`Total distance: ${result.distance}`);
