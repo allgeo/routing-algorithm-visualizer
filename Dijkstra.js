@@ -1,2 +1,0 @@
-function dijkstra(graph, source) {
-  
