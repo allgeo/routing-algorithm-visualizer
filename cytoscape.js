@@ -191,26 +191,44 @@ function dvAlgo(graph, startNode, endNode) {
   }
 
 
-  function highlightPath(path) {
+  let animationRunning = false;
+
+  function highlightPathAnimated(path) {
+    let i = 0;
+    animationRunning = true;
+  
+    function highlightNext() {
+      if (i < path.length - 1) {
+        let edgeId;
+  
+        //Make sure that the node with the lower number goes first
+        if (path[i] < path[i + 1]) {
+          edgeId = path[i] + path[i + 1];
+        } 
+        else {
+          edgeId = path[i + 1] + path[i];
+        }
+        let edge = cy.$("#" + edgeId);
+        edge.addClass("highlighted");
+  
+        i++;
+        setTimeout(highlightNext, 500); // highlight every 0.5 seconds
+      }
+      else {
+        setTimeout(function() {
+          unhighlightEdges(); // remove all highlights after a short delay
+          setTimeout(function() {
+            animationRunning = false;
+          }, 1000); // wait for 1 second before setting animationRunning to false
+        }, 1000); // wait for 1 second before unhighlighting
+      }
+    }
+  
     //Remove highlights
     cy.elements().removeClass("highlighted");
   
-    // Loop through each edge in the path
-    for (let i = 0; i < path.length - 1; i++) {
-      let edgeId;
-
-      //Make sure that the node with the lower number goes first
-      if (path[i] < path[i + 1]) {
-        edgeId = path[i] + path[i + 1];
-      } 
-      else {
-        edgeId = path[i + 1] + path[i];
-      }
-      let edge = cy.$("#" + edgeId);
-      edge.addClass("highlighted");
-    }
+    highlightNext();
   }
-
   
   function unhighlightEdges() {
     // Remove the "highlighted" class from all edges
@@ -219,9 +237,13 @@ function dvAlgo(graph, startNode, endNode) {
   
   // Test highlight
   let path = ["n0", "n1", "n2", "n7", "n6","n5", "n4"];
-  highlightPath(path);
+  
+  setInterval(function() {
+    if (!animationRunning) {
+      highlightPathAnimated(path);
+    }
+  }, 1000); // check every 1 second if animation is running and start again if not
 
-  //unhighlightEdges();
 
 
 
