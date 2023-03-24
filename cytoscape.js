@@ -192,11 +192,21 @@ function dvAlgo(graph, startNode, endNode) {
 
 
   function highlightPath(path) {
+    //Remove highlights
     cy.elements().removeClass("highlighted");
-
-    //Add highlight class to each edge in the path
+  
+    // Loop through each edge in the path
     for (let i = 0; i < path.length - 1; i++) {
-      let edge = cy.$("#" + path[i] + path[i + 1]);
+      let edgeId;
+
+      //Make sure that the node with the lower number goes first
+      if (path[i] < path[i + 1]) {
+        edgeId = path[i] + path[i + 1];
+      } 
+      else {
+        edgeId = path[i + 1] + path[i];
+      }
+      let edge = cy.$("#" + edgeId);
       edge.addClass("highlighted");
     }
   }
@@ -208,7 +218,7 @@ function dvAlgo(graph, startNode, endNode) {
   }
   
   // Test highlight
-  let path = ["n0", "n1", "n2", "n7", "n9"];
+  let path = ["n0", "n1", "n2", "n7", "n6","n5", "n4"];
   highlightPath(path);
 
   //unhighlightEdges();
