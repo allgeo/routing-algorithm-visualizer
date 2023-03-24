@@ -1,6 +1,6 @@
 var cy = (window.cy = cytoscape({
     container: document.getElementById("cy"),
-    layout: { name: "cose" }, //cose layout
+    layout: { name: "preset" }, //cose layout
     style: [
         {
             selector: "node",
@@ -22,18 +22,18 @@ var cy = (window.cy = cytoscape({
 
     elements: {
         nodes: [
-            { data: { id: "n0" } },
-            { data: { id: "n1" } },
-            { data: { id: "n2" } },
-            { data: { id: "n3" } },
-            { data: { id: "n4" } },
-            { data: { id: "n5" } },
-            { data: { id: "n6" } },
-            { data: { id: "n7" } },
-            { data: { id: "n8" } },
-            { data: { id: "n9" } },
-            { data: { id: "n10" } },
-            { data: { id: "n11" } },
+            { data: { id: 'n0' }, position: { x: -25, y: 100 } },
+            { data: { id: "n1" }, position: { x: 125, y: 100 } },
+            { data: { id: "n2" }, position: { x: 300, y: 100 } },
+            { data: { id: "n3" }, position: { x: 125, y: 200 } },
+            { data: { id: "n4" }, position: { x: -25, y: 200 } },
+            { data: { id: "n5" }, position: { x: -100, y: 300 } },
+            { data: { id: "n6" }, position: { x: 125, y: 300 } },
+            { data: { id: "n7" }, position: { x: 300, y: 300 } },
+            { data: { id: "n8" }, position: { x: 400, y: 0 } },
+            { data: { id: "n9" }, position: { x: 400, y: 300 } },
+            { data: { id: "n10" }, position: { x: -100, y: 0 } },
+            { data: { id: "n11" }, position: { x: 200, y: 0 } },
         ],
         edges: [
             { data: { id: "n0n1", source: "n0", target: "n1", weight: 3 } },
