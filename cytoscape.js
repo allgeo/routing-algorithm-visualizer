@@ -118,13 +118,11 @@ document.getElementById("submitBtn").addEventListener("click", function () {
         // Get the weight value from input
         // console.log(edge);
         var weight = document.getElementById(edge.weightInputId).value;
-        //console.log(weight);
-
         // Store the weight value in localStorage
         localStorage.setItem(edge.weightInputId, weight);
-
         // Update the edge data with the new weight value
         cy.$(edge.edgeId).data("weight", weight);
+        }
     });
 
     //Create a new GraphAdjacencyList object on submit and fill it with the data from the cytoscape graph
