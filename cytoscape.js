@@ -27,6 +27,18 @@ var cy = (window.cy = cytoscape({
               "z-index": 100
             }
           },
+          {
+            selector: 'node.start-highlighted',
+            style: {
+              'background-color': 'green'
+            }
+          },
+          {
+            selector: 'node.end-highlighted',
+            style: {
+              'background-color': 'blue'
+            }
+          },
     ],
 
     elements: {
@@ -196,6 +208,7 @@ function dvAlgo(graph, startNode, endNode) {
   function highlightPathAnimated(path) {
     let i = 0;
     animationRunning = true;
+
   
     function highlightNext() {
       if (i < path.length - 1) {
@@ -226,6 +239,8 @@ function dvAlgo(graph, startNode, endNode) {
   
     //Remove highlights
     cy.elements().removeClass("highlighted");
+
+    
   
     highlightNext();
   }
@@ -237,6 +252,12 @@ function dvAlgo(graph, startNode, endNode) {
   
   // Test highlight
   let path = ["n0", "n1", "n2", "n7", "n6","n5", "n4"];
+
+  // Highlight the starting and final node
+  let startNode = cy.$("#" + path[0]);
+  startNode.addClass("start-highlighted");
+  let finalNode = cy.$("#" + path[path.length - 1]);
+  finalNode.addClass("end-highlighted");
   
   setInterval(function() {
     if (!animationRunning) {
