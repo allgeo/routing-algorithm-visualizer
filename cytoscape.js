@@ -111,6 +111,27 @@ class GraphAdjacencyList {
     returnGraph() {}
 }
 
+//############################################# dijkstra ###############################################################
+
+function dijkstra(graph, source) {
+    // Create distance and previous maps
+    const distances = new Map();
+    const previous = new Map();
+
+    // Set the distance to the source node to 0 and all other nodes to infinity
+    for (const node of graph.nodes.keys()) {
+        distances.set(node, Infinity);
+        previous.set(node, null);
+    }
+    distances.set(source, 0);
+
+    // Create a priority queue and enqueue the source node with distance 0
+    const queue = new PriorityQueue();
+    queue.enqueue(source, 0);
+}
+
+//########################################################################################################################
+
 // Add event listener to submit button & storeing the weight values in localStorage for data presistance
 document.getElementById("submitBtn").addEventListener("click", function () {
     // Loop through the edges array
@@ -118,11 +139,13 @@ document.getElementById("submitBtn").addEventListener("click", function () {
         // Get the weight value from input
         // console.log(edge);
         var weight = document.getElementById(edge.weightInputId).value;
+        //console.log(weight);
+
         // Store the weight value in localStorage
         localStorage.setItem(edge.weightInputId, weight);
+
         // Update the edge data with the new weight value
         cy.$(edge.edgeId).data("weight", weight);
-        }
     });
 
     //Create a new GraphAdjacencyList object on submit and fill it with the data from the cytoscape graph
