@@ -99,22 +99,188 @@ var edges = [
     { edgeId: "#n8n11", weightInputId: "n8TOn11" },
     { edgeId: "#n10n11", weightInputId: "n10TOn11" },
 ];
-// Add event listener to submit button
+
+// Create a class to represent a weighted graph in adjacency list format
+class GraphAdjacencyList {
+    constructor() {
+        this.nodes = new Map();
+    }
+
+    addNode(node) {
+        if (!this.nodes.has(node)) {
+            this.nodes.set(node, []);
+        }
+    }
+
+    addEdge(node1, node2, weight) {
+        if (this.nodes.has(node1) && this.nodes.has(node2)) {
+            this.nodes.get(node1).push({ node: node2, weight: weight });
+            this.nodes.get(node2).push({ node: node1, weight: weight });
+        }
+    }
+
+    // Print the graph in adjacency list format for visualization in console
+    printGraph() {
+        for (const [node, edges] of this.nodes.entries()) {
+            const connections = edges
+                .map((edge) => `${edge.node}(${edge.weight})`)
+                .join(", ");
+            console.log(`${node} -> ${connections}`);
+        }
+    }
+
+    returnGraph() {}
+}
+
+//############################################# dijkstra ###############################################################
+
+function dijkstra(graph, source) {
+    // Create distance and previous maps
+    const distances = new Map();
+    const previous = new Map();
+
+    // Set the distance to the source node to 0 and all other nodes to infinity
+    for (const node of graph.nodes.keys()) {
+        distances.set(node, Infinity);
+        previous.set(node, null);
+    }
+    distances.set(source, 0);
+
+    // Create a priority queue and enqueue the source node with distance 0
+    const queue = new PriorityQueue();
+    queue.enqueue(source, 0);
+}
+
+//########################################################################################################################
+
+// Add event listener to submit button & storeing the weight values in localStorage for data presistance
 document.getElementById("submitBtn").addEventListener("click", function () {
     // Loop through the edges array
     edges.forEach(function (edge) {
         // Get the weight value from input
-        console.log(edge);
+        // console.log(edge);
         var weight = document.getElementById(edge.weightInputId).value;
+
         if (isNaN(parseInt(weight))) {
             console.log("Not a number, not updated")
         } else {
+
         // Store the weight value in localStorage
         localStorage.setItem(edge.weightInputId, weight);
         // Update the edge data with the new weight value
         cy.$(edge.edgeId).data("weight", weight);
         }
     });
+
+    //Create a new GraphAdjacencyList object on submit and fill it with the data from the cytoscape graph
+    var graph = new GraphAdjacencyList();
+
+    // Add nodes from Cytoscape to the graph
+    graph.addNode("n0");
+    graph.addNode("n1");
+    graph.addNode("n2");
+    graph.addNode("n3");
+    graph.addNode("n4");
+    graph.addNode("n5");
+    graph.addNode("n6");
+    graph.addNode("n7");
+    graph.addNode("n8");
+    graph.addNode("n9");
+    graph.addNode("n10");
+    graph.addNode("n11");
+
+    // Add edges with weights from the cytoscape graph while also converting the weight values from string to integer
+    graph.addEdge(
+        "n0",
+        "n1",
+        parseInt(document.getElementById("n0TOn1").value, 10)
+    );
+    graph.addEdge(
+        "n0",
+        "n3",
+        parseInt(document.getElementById("n0TOn3").value, 10)
+    );
+    graph.addEdge(
+        "n0",
+        "n4",
+        parseInt(document.getElementById("n0TOn4").value, 10)
+    );
+    graph.addEdge(
+        "n1",
+        "n2",
+        parseInt(document.getElementById("n1TOn2").value, 10)
+    );
+    graph.addEdge(
+        "n2",
+        "n7",
+        parseInt(document.getElementById("n2TOn7").value, 10)
+    );
+    graph.addEdge(
+        "n2",
+        "n3",
+        parseInt(document.getElementById("n2TOn3").value, 10)
+    );
+    graph.addEdge(
+        "n3",
+        "n4",
+        parseInt(document.getElementById("n3TOn4").value, 10)
+    );
+    graph.addEdge(
+        "n3",
+        "n6",
+        parseInt(document.getElementById("n3TOn6").value, 10)
+    );
+    graph.addEdge(
+        "n3",
+        "n7",
+        parseInt(document.getElementById("n3TOn7").value, 10)
+    );
+    graph.addEdge(
+        "n4",
+        "n5",
+        parseInt(document.getElementById("n4TOn5").value, 10)
+    );
+    graph.addEdge(
+        "n5",
+        "n6",
+        parseInt(document.getElementById("n5TOn6").value, 10)
+    );
+    graph.addEdge(
+        "n5",
+        "n10",
+        parseInt(document.getElementById("n5TOn10").value, 10)
+    );
+    graph.addEdge(
+        "n6",
+        "n7",
+        parseInt(document.getElementById("n6TOn7").value, 10)
+    );
+    graph.addEdge(
+        "n7",
+        "n9",
+        parseInt(document.getElementById("n7TOn9").value, 10)
+    );
+    graph.addEdge(
+        "n7",
+        "n8",
+        parseInt(document.getElementById("n7TOn8").value, 10)
+    );
+    graph.addEdge(
+        "n8",
+        "n9",
+        parseInt(document.getElementById("n8TOn9").value, 10)
+    );
+    graph.addEdge(
+        "n8",
+        "n11",
+        parseInt(document.getElementById("n8TOn11").value, 10)
+    );
+    graph.addEdge(
+        "n10",
+        "n11",
+        parseInt(document.getElementById("n10TOn11").value, 10)
+    );
+    graph.printGraph();
 });
 
 // On page load, retrieve the weight values from the localStorage and update the edge data with them
