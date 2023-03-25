@@ -107,6 +107,8 @@ class GraphAdjacencyList {
             console.log(`${node} -> ${connections}`);
         }
     }
+
+    returnGraph() {}
 }
 
 // Add event listener to submit button & storeing the weight values in localStorage for data presistance
