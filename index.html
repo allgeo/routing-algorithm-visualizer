@@ -103,7 +103,20 @@
                         </div> -->
                 </div>
             </div>
+            <div>
+                <label>Select starting node:
+                <select class="dvNode", id="dvNode1">
+                </select>
+            </label>
+                <label>Select ending node:
+                <select class="dvNode", id="dvNode2">
+                </select>
+            </label>
+            <p>Path:   </p><p id="dvPath"></p>            Cost:   <p id="dvCost"></p>
 
+            <button type="button" class="btn btn-primary" id="dvButton">Run DV Algorithm</button>
+
+            </div>
             <!-- Graph using CytoScape -->
             <div
                 id="cy"

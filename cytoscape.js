@@ -104,10 +104,10 @@ document.getElementById("submitBtn").addEventListener("click", function () {
     // Loop through the edges array
     edges.forEach(function (edge) {
         // Get the weight value from input
-        console.log(edge);
+//        console.log(edge);
         var weight = document.getElementById(edge.weightInputId).value;
         if (isNaN(parseInt(weight))) {
-            console.log("Not a number, not updated")
+//            console.log("Not a number, not updated")
         } else {
         // Store the weight value in localStorage
         localStorage.setItem(edge.weightInputId, weight);
@@ -208,7 +208,11 @@ function dvAlgo(graph, startNode, endNode) {
   function highlightPathAnimated(path) {
     let i = 0;
     animationRunning = true;
-
+    // Highlight the starting and final node
+    let startNode = cy.$("#" + path[0]);
+    startNode.addClass("start-highlighted");
+    let finalNode = cy.$("#" + path[path.length - 1]);
+    finalNode.addClass("end-highlighted");
   
     function highlightNext() {
       if (i < path.length - 1) {
@@ -223,7 +227,6 @@ function dvAlgo(graph, startNode, endNode) {
         }
         let edge = cy.$("#" + edgeId);
         edge.addClass("highlighted");
-  
         i++;
         setTimeout(highlightNext, 500); // highlight every 0.5 seconds
       }
@@ -232,8 +235,11 @@ function dvAlgo(graph, startNode, endNode) {
           unhighlightEdges(); // remove all highlights after a short delay
           setTimeout(function() {
             animationRunning = false;
+            startNode.removeClass("start-highlighted");
+            finalNode.removeClass("end-highlighted");
           }, 1000); // wait for 1 second before setting animationRunning to false
         }, 1000); // wait for 1 second before unhighlighting
+
       }
     }
   
@@ -251,25 +257,20 @@ function dvAlgo(graph, startNode, endNode) {
   }
   
   // Test highlight
-  let path = ["n0", "n1", "n2", "n7", "n6","n5", "n4"];
+  /*let path = [];
 
-  // Highlight the starting and final node
-  let startNode = cy.$("#" + path[0]);
-  startNode.addClass("start-highlighted");
-  let finalNode = cy.$("#" + path[path.length - 1]);
-  finalNode.addClass("end-highlighted");
-  
+
   setInterval(function() {
     if (!animationRunning) {
       highlightPathAnimated(path);
     }
-  }, 1000); // check every 1 second if animation is running and start again if not
+  }, 5000); // check every 1 second if animation is running and start again if not
 
 
 
 
-  // Create graph
-const graph = new GraphAdjacencyList();
+  // Create graph 
+/*const graph = new GraphAdjacencyList();
 graph.addNode("A");
 graph.addNode("B");
 graph.addNode("C");
@@ -281,15 +282,15 @@ graph.addEdge("B", "C", 3);
 graph.addEdge("B", "E", 9);
 graph.addEdge("C", "D", 4);
 graph.addEdge("D", "E", 2);
-
+console.log(graph)
 
 // Find shortest path between A and E
-const result = dvAlgo(graph, "C", "E");
-console.log(result)
-console.log(`Shortest path: ${result.path.join(" -> ")}`);
-console.log(`Total distance: ${result.distance}`);
+//const result = dvAlgo(graph, "C", "E");
+//console.log(result)
+//console.log(`Shortest path: ${result.path.join(" -> ")}`);
+//console.log(`Total distance: ${result.distance}`);
 
-
+*/
 /*
 -----------------------------------------------------------------------------------------------------------------
 */
@@ -437,24 +438,61 @@ function getPath(start, destination, minCostMatrix) {
 }
 
 
-let minCostMatrix = alternativeDVAlgo(graph)
-console.log(getPath('A', 'D', minCostMatrix))
-console.log(getPath('B', 'D', minCostMatrix))
-console.log(getPath('E', 'C', minCostMatrix))
-console.log('Shortest distance from E to C: ' + minCostMatrix.get('E')['distanceVector']['C']['distance'])
+//let minCostMatrix = alternativeDVAlgo(graph)
+//console.log(getPath('A', 'D', minCostMatrix))
+//console.log(getPath('B', 'D', minCostMatrix))
+//console.log(getPath('E', 'C', minCostMatrix))
+//console.log('Shortest distance from E to C: ' + minCostMatrix.get('E')['distanceVector']['C']['distance'])
 
 
-function runDV(){
+function runDV(start, end){
+
+  unhighlightEdges()
   const currentgraph = new GraphAdjacencyList()
   cy.nodes().forEach(function( ele ){
   currentgraph.addNode( ele.id() );
- });
+  });
  cy.edges().forEach(function( ele ){
-  currentgraph.addEdge( ele.source().id(),ele.target().id(), ele.data('weight'));
+  currentgraph.addEdge( ele.source().id(),ele.target().id(), parseInt(ele.data('weight')));
  });
+ console.log(currentgraph)
+ let result = (dvAlgo(currentgraph,start,end))
+ highlightPathAnimated(result.path)
+ document.getElementById("dvPath").innerHTML=result.path;
+ document.getElementById("dvCost").innerHTML=result.distance;
 
- console.log(dvAlgo(currentgraph,'n0','n4'))
-
+ //let result2= alternativeDVAlgo(currentgraph)
+ //console.log(result2)
 }
 
-runDV();
+function assignDropDown(){
+  nodelist = []
+  cy.nodes().forEach(function( ele ){
+    nodelist.push(ele.id())
+  });
+  for (let i =0; i<nodelist.length;i++ ){
+  let option = document.createElement("option");
+  option.setAttribute('value', nodelist[i]);
+  let optionText = document.createTextNode(nodelist[i]);
+  option.appendChild(optionText);
+  document.getElementById('dvNode1').appendChild(option);
+  }
+  for (let i =0; i<nodelist.length;i++ ){
+    let option = document.createElement("option");
+    option.setAttribute('value', nodelist[i]);
+    let optionText = document.createTextNode(nodelist[i]);
+    option.appendChild(optionText);
+    document.getElementById('dvNode2').appendChild(option);
+    }
+
+}
+window.addEventListener("load", (event) => {
+  assignDropDown();
+});
+
+document.getElementById("dvButton").addEventListener("click", function () {
+  let start = document.getElementById("dvNode1").value;
+  let end = document.getElementById("dvNode2").value;
+  runDV(start, end);
+  console.log(start, end);
+});
