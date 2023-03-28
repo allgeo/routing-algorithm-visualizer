@@ -443,3 +443,18 @@ console.log(getPath('B', 'D', minCostMatrix))
 console.log(getPath('E', 'C', minCostMatrix))
 console.log('Shortest distance from E to C: ' + minCostMatrix.get('E')['distanceVector']['C']['distance'])
 
+
+function runDV(){
+  const currentgraph = new GraphAdjacencyList()
+  cy.nodes().forEach(function( ele ){
+  currentgraph.addNode( ele.id() );
+ });
+ cy.edges().forEach(function( ele ){
+  currentgraph.addEdge( ele.source().id(),ele.target().id(), ele.data('weight'));
+ });
+
+ console.log(dvAlgo(currentgraph,'n0','n4'))
+
+}
+
+runDV();
