@@ -65,7 +65,7 @@
                     <label for="dropdown" class="form-label"
                         >Choose a Routing Algorithm</label
                     >
-                    <select class="form-select" id="dropdown">
+                    <select class="form-select" id="dropdown" onchange="dropdown()">
                         <option value="1">Dijkstra's algorithm</option>
                         <option value="2">Distance-vector algorithm</option>
                     </select>
@@ -103,15 +103,15 @@
                         </div> -->
                 </div>
             </div>
-            <div>
+            <div id="dvSelect" hidden>
                 <label>Select starting node:
-                <select class="dvNode", id="dvNode1">
-                </select>
-            </label>
+                    <select class="dvNode", id="dvNode1">
+                    </select>
+                </label>
                 <label>Select ending node:
-                <select class="dvNode", id="dvNode2">
-                </select>
-            </label>
+                    <select class="dvNode", id="dvNode2">
+                    </select>
+                </label>
             <p>Path:   </p><p id="dvPath"></p>            Cost:   <p id="dvCost"></p>
 
             <button type="button" class="btn btn-primary" id="dvButton">Run DV Algorithm</button>

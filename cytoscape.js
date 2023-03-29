@@ -561,3 +561,14 @@ document.getElementById("addNode").addEventListener("click", function () {
   addToDropDown1("n"+newNumber);
   addToDropDown2("n"+newNumber);
 });
+
+function dropdown(){
+  let e = document.getElementById("dropdown");
+  var value = e.options[e.selectedIndex].value;
+  if(value == 1){
+    document.getElementById("dvSelect").hidden=true;
+  }
+  else{
+    document.getElementById("dvSelect").hidden=false;
+  }
+}
