@@ -78,6 +78,7 @@ var cy = (window.cy = cytoscape({
         ],
     },
 }));
+
 var edges = []
 
 //create the edge array dynamicallly from the cytoscape graph
@@ -91,6 +92,28 @@ function fillEdges(){
       edges.push(newEdge)
     });
   }
+  fillEdges();
+  function createWeightBoxes(){
+    cy.edges().forEach(function( ele ){
+      let edgeName = ele.source().id() + "TO" + ele.target().id();  
+      let container = document.createElement("div");
+      container.className = "col-3 col-md-2";
+      let weightBox = document.createElement("div")
+      weightBox.className = "form-floating";
+      let inputBox = document.createElement("input");
+      inputBox.className = "form-control";
+      //inputBox.type = "text";
+      inputBox.id = edgeName;
+      let label = document.createElement("label");
+      label.for = "";
+      label.innerHTML = edgeName;
+      weightBox.appendChild(inputBox);
+      weightBox.appendChild(label);
+      container.appendChild(weightBox);
+      document.getElementById("weightBoxes").appendChild(container);
+      });
+    };
+  createWeightBoxes();
 /* these were hardcoded and should be deleted
 var edges = [
     { edgeId: "#n0n1", weightInputId: "n0TOn1" },
@@ -112,13 +135,12 @@ var edges = [
     { edgeId: "#n8n11", weightInputId: "n8TOn11" },
     { edgeId: "#n10n11", weightInputId: "n10TOn11" },
 ]; */
-
 // Add event listener to submit button
 document.getElementById("submitBtn").addEventListener("click", function () {
     // Loop through the edges array
-    edges.forEach(function (edge) {
+       edges.forEach(function (edge) {
+       console.log=(edge)
         // Get the weight value from input
-//        console.log(edge);
         var weight = document.getElementById(edge.weightInputId).value;
         if (isNaN(parseInt(weight))) {
 //            console.log("Not a number, not updated")
@@ -266,16 +288,14 @@ function dvAlgo(graph, startNode, endNode) {
     // Remove the "highlighted" class from all edges
     cy.edges().removeClass("highlighted");
   } 
-  
+ /* 
   setInterval(function() {
     if (!animationRunning) {
       highlightPathAnimated(path);
     }
   }, 5000); // check every 1 second if animation is running and start again if not
-
+*/
  }
-  // Test highlight
-  /*let path = [];
 
 
 // Create graph !this was a test graph and shoul be deleted!
@@ -493,10 +513,10 @@ function assignDropDown(){
   }
 
 }
+
 //events on page load
 window.addEventListener("load", (event) => {
   assignDropDown(); //dynamically fill DV dropboxes
-  fillEdges(); //dynamically fill edge list
   getStoredWeight(); //get stored values for the weight boxes
 });
 
