@@ -217,15 +217,19 @@ function dvAlgo(graph, startNode, endNode) {
     function highlightNext() {
       if (i < path.length - 1) {
         let edgeId;
-  
+        //get the node numbers as an int
+        let n1 = parseInt(path[i].slice(1))
+        let n2 = parseInt(path[i+1].slice(1))
         //Make sure that the node with the lower number goes first
-        if (path[i] < path[i + 1]) {
+        if (n1 < n2) {
           edgeId = path[i] + path[i + 1];
         } 
         else {
           edgeId = path[i + 1] + path[i];
         }
+        console.log(edgeId)
         let edge = cy.$("#" + edgeId);
+        console.log(edge)
         edge.addClass("highlighted");
         i++;
         setTimeout(highlightNext, 500); // highlight every 0.5 seconds
