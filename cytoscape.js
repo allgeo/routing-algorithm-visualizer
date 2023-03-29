@@ -78,7 +78,20 @@ var cy = (window.cy = cytoscape({
         ],
     },
 }));
+var edges = []
 
+//create the edge array dynamicallly from the cytoscape graph
+function fillEdges(){
+    cy.edges().forEach(function( ele ){
+      let newEdge = 
+      { 
+        edgeId:"#"+ele.id(), 
+        weightInputId: ele.source().id() + "TO" + ele.target().id()
+      };
+      edges.push(newEdge)
+    });
+  }
+/* these were hardcoded and should be deleted
 var edges = [
     { edgeId: "#n0n1", weightInputId: "n0TOn1" },
     { edgeId: "#n0n3", weightInputId: "n0TOn3" },
@@ -98,7 +111,8 @@ var edges = [
     { edgeId: "#n8n9", weightInputId: "n8TOn9" },
     { edgeId: "#n8n11", weightInputId: "n8TOn11" },
     { edgeId: "#n10n11", weightInputId: "n10TOn11" },
-];
+]; */
+
 // Add event listener to submit button
 document.getElementById("submitBtn").addEventListener("click", function () {
     // Loop through the edges array
@@ -118,13 +132,15 @@ document.getElementById("submitBtn").addEventListener("click", function () {
 });
 
 // On page load, retrieve the weight values from the localStorage and update the edge data with them
-edges.forEach(function (edge) {
+function getStoredWeight(){  
+  edges.forEach(function (edge) {
     var storedWeight = localStorage.getItem(edge.weightInputId);
     if (storedWeight) {
         cy.$(edge.edgeId).data("weight", storedWeight);
         document.getElementById(edge.weightInputId).value = storedWeight;
     }
-});
+  })
+};
 
 
 class GraphAdjacencyList {
@@ -227,10 +243,7 @@ function dvAlgo(graph, startNode, endNode) {
         else {
           edgeId = path[i + 1] + path[i];
         }
-        console.log(edgeId)
-        let edge = cy.$("#" + edgeId);
-        console.log(edge)
-        edge.addClass("highlighted");
+        cy.$("#" + edgeId).addClass("highlighted");
         i++;
         setTimeout(highlightNext, 500); // highlight every 0.5 seconds
       }
@@ -243,37 +256,29 @@ function dvAlgo(graph, startNode, endNode) {
             finalNode.removeClass("end-highlighted");
           }, 1000); // wait for 1 second before setting animationRunning to false
         }, 1000); // wait for 1 second before unhighlighting
-
       }
     }
-  
     //Remove highlights
     cy.elements().removeClass("highlighted");
-
-    
-  
     highlightNext();
-  }
   
   function unhighlightEdges() {
     // Remove the "highlighted" class from all edges
     cy.edges().removeClass("highlighted");
-  }
+  } 
   
-  // Test highlight
-  /*let path = [];
-
-
   setInterval(function() {
     if (!animationRunning) {
       highlightPathAnimated(path);
     }
   }, 5000); // check every 1 second if animation is running and start again if not
 
+ }
+  // Test highlight
+  /*let path = [];
 
 
-
-  // Create graph 
+// Create graph !this was a test graph and shoul be deleted!
 /*const graph = new GraphAdjacencyList();
 graph.addNode("A");
 graph.addNode("B");
@@ -294,7 +299,7 @@ console.log(graph)
 //console.log(`Shortest path: ${result.path.join(" -> ")}`);
 //console.log(`Total distance: ${result.distance}`);
 
-*/
+!delete up to here*/
 /*
 -----------------------------------------------------------------------------------------------------------------
 */
@@ -309,23 +314,18 @@ function initializeCostMatrix(adjacencyList){
         costMatrix.get(vertex)['distanceVector'][vertex] = {'distance': 0, 'hop': vertex}
         neighbors.forEach(neighbor => {
             costMatrix.get(vertex)['distanceVector'][neighbor['node']] = {'distance': neighbor['weight'], 'hop': neighbor['node']}
-        })
-        
+        })   
     }
-
-    
     //add non-neighbor vertices to the distance vector of each vertex
     for(let key of adjacencyList.nodes.keys()) {
-        let distanceVector = costMatrix.get(key)['distanceVector']
-        for(let node of adjacencyList.nodes.keys()) {
-                if(distanceVector[node] === undefined) {
-                    distanceVector[node] = {'distance': Infinity, 'hop': null}
-                }
+      let distanceVector = costMatrix.get(key)['distanceVector']
+      for(let node of adjacencyList.nodes.keys()) {
+        if(distanceVector[node] === undefined) {
+            distanceVector[node] = {'distance': Infinity, 'hop': null}
         }
+      }
 
     }
-
-
     return costMatrix
 }
 
@@ -419,11 +419,10 @@ function checkIfDistanceVectorUpdated(currentDV, newDV) {
 
 function checkForConvergence(costMatrix) {
     for(let node of costMatrix.keys()) {
-        if(costMatrix.get(node)['changed'] === true) {
-            return false;
-        }
+      if(costMatrix.get(node)['changed'] === true) {
+        return false;
+      }
     }
-
     return true;
 }
 
@@ -450,36 +449,40 @@ function getPath(start, destination, minCostMatrix) {
 
 
 function runDV(start, end){
-
-  unhighlightEdges()
+  //create a new Graph adjacency List
   const currentgraph = new GraphAdjacencyList()
+  //loop through nodes and add them to new graph
   cy.nodes().forEach(function( ele ){
   currentgraph.addNode( ele.id() );
   });
+  //loop through edges and add them to graph
  cy.edges().forEach(function( ele ){
   currentgraph.addEdge( ele.source().id(),ele.target().id(), parseInt(ele.data('weight')));
  });
- console.log(currentgraph)
- let result = (dvAlgo(currentgraph,start,end))
+ //run the First Distance vector Algorithm 
+ let result = dvAlgo(currentgraph,start,end)
+ //run the animation
  highlightPathAnimated(result.path)
+ //display the path and cost
  document.getElementById("dvPath").innerHTML=result.path;
  document.getElementById("dvCost").innerHTML=result.distance;
-
+ //implmentation of altDVA
  //let result2= alternativeDVAlgo(currentgraph)
  //console.log(result2)
 }
 
+//dynamically generate the drop down menus for DV algo
 function assignDropDown(){
   nodelist = []
   cy.nodes().forEach(function( ele ){
     nodelist.push(ele.id())
   });
   for (let i =0; i<nodelist.length;i++ ){
-  let option = document.createElement("option");
-  option.setAttribute('value', nodelist[i]);
-  let optionText = document.createTextNode(nodelist[i]);
-  option.appendChild(optionText);
-  document.getElementById('dvNode1').appendChild(option);
+    let option = document.createElement("option");
+    option.setAttribute('value', nodelist[i]);
+    let optionText = document.createTextNode(nodelist[i]);
+    option.appendChild(optionText);
+    document.getElementById('dvNode1').appendChild(option);
   }
   for (let i =0; i<nodelist.length;i++ ){
     let option = document.createElement("option");
@@ -487,16 +490,19 @@ function assignDropDown(){
     let optionText = document.createTextNode(nodelist[i]);
     option.appendChild(optionText);
     document.getElementById('dvNode2').appendChild(option);
-    }
+  }
 
 }
+//events on page load
 window.addEventListener("load", (event) => {
-  assignDropDown();
+  assignDropDown(); //dynamically fill DV dropboxes
+  fillEdges(); //dynamically fill edge list
+  getStoredWeight(); //get stored values for the weight boxes
 });
 
+//click button for DV Algo
 document.getElementById("dvButton").addEventListener("click", function () {
   let start = document.getElementById("dvNode1").value;
   let end = document.getElementById("dvNode2").value;
   runDV(start, end);
-  console.log(start, end);
 });
