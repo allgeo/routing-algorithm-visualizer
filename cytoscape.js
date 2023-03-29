@@ -93,27 +93,30 @@ function fillEdges(){
     });
   }
   fillEdges();
-  function createWeightBoxes(){
-    cy.edges().forEach(function( ele ){
-      let edgeName = ele.source().id() + "TO" + ele.target().id();  
-      let container = document.createElement("div");
-      container.className = "col-3 col-md-2";
-      let weightBox = document.createElement("div")
-      weightBox.className = "form-floating";
-      let inputBox = document.createElement("input");
-      inputBox.className = "form-control";
-      //inputBox.type = "text";
-      inputBox.id = edgeName;
-      let label = document.createElement("label");
-      label.for = "";
-      label.innerHTML = edgeName;
-      weightBox.appendChild(inputBox);
-      weightBox.appendChild(label);
-      container.appendChild(weightBox);
-      document.getElementById("weightBoxes").appendChild(container);
-      });
-    };
-  createWeightBoxes();
+
+  function createWeightBox(edgeName){ 
+    let container = document.createElement("div");
+    container.className = "col-3 col-md-2";
+    let weightBox = document.createElement("div")
+    weightBox.className = "form-floating";
+    let inputBox = document.createElement("input");
+    inputBox.className = "form-control";
+    //inputBox.type = "text";
+    inputBox.id = edgeName;
+    let label = document.createElement("label");
+    label.for = "";
+    label.innerHTML = edgeName;
+    weightBox.appendChild(inputBox);
+    weightBox.appendChild(label);
+    container.appendChild(weightBox);
+    document.getElementById("weightBoxes").appendChild(container);
+  };
+    
+  cy.edges().forEach(function( ele ){
+    let edgeName = ele.source().id() + "TO" + ele.target().id();
+    createWeightBox(edgeName);
+  });
+
 /* these were hardcoded and should be deleted
 var edges = [
     { edgeId: "#n0n1", weightInputId: "n0TOn1" },
@@ -525,4 +528,22 @@ document.getElementById("dvButton").addEventListener("click", function () {
   let start = document.getElementById("dvNode1").value;
   let end = document.getElementById("dvNode2").value;
   runDV(start, end);
+});
+
+document.getElementById("addNode").addEventListener("click", function () {
+  let newNumber = cy.nodes().length;
+  let newEdgeId = 'n'+(newNumber-1)+'n'+newNumber;
+  let connection = 'n'+(newNumber-1)+'TOn'+newNumber;
+  cy.add([
+    { group: 'nodes', data: { id: 'n'+newNumber }, position: { x: 100, y: 100 } },
+    { group: 'edges', data: { id: newEdgeId, source: 'n'+(newNumber-1), target: 'n'+newNumber, weight: 1} }
+  ]);
+  let newEdge = 
+  { 
+    edgeId:"#"+newEdgeId, 
+    weightInputId: connection
+  };
+  edges.push(newEdge);
+  createWeightBox(connection);
+  assignDropDown();
 });
