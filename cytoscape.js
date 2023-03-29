@@ -514,9 +514,22 @@ function assignDropDown(){
     option.appendChild(optionText);
     document.getElementById('dvNode2').appendChild(option);
   }
-
 }
 
+function addToDropDown1(nodeId){
+  let option = document.createElement("option");
+  option.setAttribute('value', nodeId);
+  let optionText = document.createTextNode(nodeId);
+  option.appendChild(optionText);
+  document.getElementById('dvNode1').appendChild(option);
+}
+function addToDropDown2(nodeId){
+  let option = document.createElement("option");
+  option.setAttribute('value', nodeId);
+  let optionText = document.createTextNode(nodeId);
+  option.appendChild(optionText);
+  document.getElementById('dvNode2').appendChild(option);
+}
 //events on page load
 window.addEventListener("load", (event) => {
   assignDropDown(); //dynamically fill DV dropboxes
@@ -545,5 +558,6 @@ document.getElementById("addNode").addEventListener("click", function () {
   };
   edges.push(newEdge);
   createWeightBox(connection);
-  assignDropDown();
+  addToDropDown1("n"+newNumber);
+  addToDropDown2("n"+newNumber);
 });
