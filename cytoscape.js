@@ -110,6 +110,76 @@ class GraphAdjacencyList {
 
     returnGraph() {}
 }
+
+
+function dijkstra(graph, startNode, endNode){
+    //Sets for visited nodes and unvisited nodes 
+    const visited = new Set();
+    const unvisited = new Set(graph.nodes.keys());
+    //Map to keep track of predecessor node and and one for distances
+    const predecessor = new Map();
+    const distances = new Map();
+
+    //Initialize all node distances to startNode as infinite except startNode which is 0 
+    for (const node of unvisited) {
+        distances.set(node, Infinity);
+    }
+    distances.set(startNode, 0);
+
+    //Loop through unvisited nodes finding node with least distance to previous node 
+    while(unvisited.size > 0){
+        let minNode = null; 
+        let minDist = Infinity;
+        for (const node of unvisited){
+            if (distances.get(node) < minDist){
+                minDist = distances.get(node);
+                minNode = node;    
+            }
+        }
+        
+        if(minNode == endNode){
+            break;
+        }
+        //Add node with least distance to previous node to visited and remove from unvisited
+        visited.add(minNode);
+        unvisited.delete(minNode);
+
+        //Unvisited neighbour nodes of current visited node 
+        const neighbours = graph.nodes.get(minNode);
+        //Loop through unvisited neighbor nodes 
+        for(const neighbour of neighbours){
+            if(!visited.has(neighbour.node)){
+                //Calculate distance to from current visited node to neighbour node 
+                const distToNeighbour = distances.get(minNode) + neighbour.weight;
+                //Update distance to neighbour node if new distance is shorter than distance to current 
+                if (distToNeighbour < distances.get(neighbour.node)){
+                    distances.set(neighbour.node, distToNeighbour);
+                    //Update predecessor node as distance to neighbour updates
+                    predecessor.set(neighbour.node, minNode);
+                } 
+            }
+        }
+    }     
+
+    //Build shortest path from start node to end node from map of predecessor nodes
+    const path = [];
+    let current = endNode;
+    while(predecessor.has(current)){
+        path.unshift(current);
+        current = predecessor.get(current);
+    }
+    path.unshift(startNode);
+    
+    //Return path and distance
+    return { path, distance: distances.get(endNode) };
+
+}
+
+
+/*
+-----------------------------------------------------------------------------------------------------------------
+*/
+
 function dijkstra(graph, source) {
     // Create distance and previous maps
     const distances = new Map();
