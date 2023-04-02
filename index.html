@@ -65,7 +65,11 @@
                     <label for="dropdown" class="form-label"
                         >Choose a Routing Algorithm</label
                     >
-                    <select class="form-select" id="dropdown">
+                    <select
+                        class="form-select"
+                        id="dropdown"
+                        onchange="dropdown()"
+                    >
                         <option value="1">Dijkstra's algorithm</option>
                         <option value="2">Distance-vector algorithm</option>
                     </select>
@@ -103,14 +107,30 @@
                         </div> -->
                 </div>
             </div>
-
+            <div style="margin-bottom: 10px;" id="dvSelect" hidden>
+                <div class="row" style="margin-bottom: 10px;">
+                    <div class="col-md-2 col-sm-12">
+                        <label class="form-label" >  <code style="color:black" >Select starting node</code> </label>
+                        <select class="form-select dvNode" id="dvNode1" style="width: 200px"></select>
+                    </div>
+                    <div class="col-md-2 col-sm-12">
+                        <label class="form-label" ><code style="color:black" >Select ending node</code></label>
+                        <select class="form-select dvNode" id="dvNode2" style="width: 200px"></select>
+                    </div>
+                    <div class="col-md-2 col-sm-12 d-flex justify-content-center align-items-end">
+                        <button type="button" class="btn btn-dark" id="dvButton"><code style="color:white" >Run DV Algorithm</code></button>
+                    </div>
+                </div>
+            </div>
+            
             <!-- Graph using CytoScape -->
-            <div
-                id="cy"
-                class="rounded border border-dark"
-                id="container"
-                style="height: 550px; width: 100%"
-            ></div>
+            <div id="cy" class="rounded border border-dark" id="container" style="height: 550px; width: 100%"></div>
+                
+            <!-- Generating tables  -->
+            <div style="margin: 20px 20px;">
+                <div id="dvAnnotationsContainer"></div>
+            </div>
+
             <br />
 
             <div class="d-flex justify-content-between align-items-center">
@@ -120,11 +140,13 @@
                     id="submitBtn"
                     class="btn btn-dark btn-lg"
                 >
-                    Submit
+                    Update Graph
                 </button>
             </div>
             <br />
-            <div class="row g-2">
+
+            <div class="row g-2" id="weightBoxes">
+                <!--
                 <div class="col-3 col-md-2">
                     <div class="form-floating">
                         <input class="form-control" id="n0TOn1" />
@@ -234,68 +256,19 @@
                         <input class="form-control" id="n10TOn11" />
                         <label for="">n10TOn11</label>
                     </div>
-                </div>
+                </div> -->
 
                 <br />
             </div>
-
-            <br /><br />
-
-            <div class="rounded border">
-                <div class="mx-5 my-5">
-                    <h5>Update as of March 9th, 2023 (for group members)</h5>
-                    <br />
-                    <h6>Whats Done</h6>
-
-                    <ul>
-                        <li>
-                            Uses <code>cytoscapes.js</code> to generate and and
-                            manupulate the graph.
-                        </li>
-                        <li>
-                            Uses Bootstrap 5.2 to for styling and components
-                        </li>
-
-                        <li>
-                            Users are able to update the graph weight by
-                            entering values into the input field, then by
-                            pressing the submit button.
-                        </li>
-                        <li>
-                            The submitted weight is presistant since its stored
-                            in browser local storage. Meaning, refreshing the
-                            page will keep the previously entered data. As long
-                            as the browser cache isn't cleared, the previous
-                            data will be kept.
-                        </li>
-                    </ul>
-                    <h6>Whats Left</h6>
-                    <ul>
-                        <li>
-                            At the moment, cytoscapes stores the weight values
-                            as string (even if its a number, its represented as
-                            string). Need to implement a validation so that
-                            users can only enter numbers.
-                        </li>
-                        <li>
-                            Whenever you refresh the page, the orientation of
-                            the graph changes (but all the nodes and edges are
-                            same). There is a way to hardcode each node to a set
-                            point using cytoscape but still need to do that
-                        </li>
-                        <li>
-                            The "Choose a Routing Algorithm" dropdown isnt
-                            functional, since we havent inplement the algorithm
-                            for it it.
-                        </li>
-                        <li>
-                            There is also a way to highlight nodes and edges
-                            using cytoscape, so we could use that to highlight
-                            the path that the algorithm takes.
-                        </li>
-                    </ul>
-                </div>
+            <br>
+            <div class="d-flex justify-content-between align-items-center">
+                <button type="submit" id="addNode" class="btn btn-dark btn-lg">
+                    Add Node
+                </button>
             </div>
+            <br />
+
+ 
         </div>
 
         <!-- Footer -->
