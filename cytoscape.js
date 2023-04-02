@@ -327,6 +327,10 @@ console.log(graph)
 -----------------------------------------------------------------------------------------------------------------
 */
 /*Alternative distance vector algo implementation*/
+//vars used to clear timeouts
+var graphIntervalId;
+var timeoutArr = []
+
 function initializeCostMatrix(adjacencyList){
     let costMatrix = new Map()
 
@@ -352,18 +356,31 @@ function initializeCostMatrix(adjacencyList){
     return costMatrix
 }
 
-function alternativeDVAlgo(adjacencyList) {
+function alternativeDVAlgo(adjacencyList, showPath, start, end) {
     let costMatrix = initializeCostMatrix(adjacencyList)
-    console.log("Initially the distance vector of each vertex is the distance to each of its neighbours, and all non-neighbor vertices have a distance of infinity")
+
+    //update annotation on screen
+    document.getElementById("dvAnnotation").innerHTML = "Initially the distance vector of each vertex is the distance to each of its neighbours, and all non-neighbor vertices have a distance of infinity"
+    
+    //function used to created the distance vector tables for each vertex
+    createTables(costMatrix)
+
+    var startTimeout = 3000;
+
     //while algorithm has not converged
     while(!checkForConvergence(costMatrix)) {
         let updatedCostMatrix = new Map();
-        console.log("Each node with an updated distance vector will share its distance vector with each of its neighbors")
+
+        //update annotation
+        timeoutArr.push(setTimeout(() => {
+          document.getElementById("dvAnnotation").innerHTML = "Each node with an updated distance vector will share its distance vector with each of its neighbors"
+        }, startTimeout));
+
         for(let key of costMatrix.keys()){
             let neighbors = adjacencyList.nodes.get(key)
             let changedNeighbors = []
 
-            //iterate through neighbors and check if their cost matrix has changed
+            //iterate through neighbors and check if their distance vector has changed
             for(let neighbor of neighbors) {
                 if(costMatrix.get(neighbor['node'])['changed'] === true) {
                   //if neighbors distance vector has changed add neighbor to list of neighbors whose distance vector has changed
@@ -377,22 +394,43 @@ function alternativeDVAlgo(adjacencyList) {
 
             if(neighbors.length > 0) {
               for(let element of neighbors) {
-                //console.log(element['node'])
                 annotation += element['node'] + ", "
               }
               annotation += "share their distance vectors with " + key + ", " + key + " updates its distance vector";
-              console.log(annotation)
+
             }
             
+            //if distance vector has updated then update cost matrix and update distance vector table displayed on screen
             if(checkIfDistanceVectorUpdated(currentDV, updatedDV)) {
               updatedCostMatrix.set(key, {'changed':true, 'distanceVector': updatedDV})
+              timeoutArr.push(setTimeout(() => {
+                document.getElementById("dvAnnotation").innerHTML = annotation
+                updateDistanceVectorTable(key, updatedDV)
+              }, startTimeout));
+              startTimeout += 3000;
             } else {
               updatedCostMatrix.set(key, {'changed':false, 'distanceVector': currentDV})
             }
+
         }
         costMatrix = updatedCostMatrix
     }
-    console.log("No updates from neighbor nodes have been sent, so now each node has the shortest distance to all other nodes in the network")
+
+    //update annotation
+    timeoutArr.push(setTimeout(() => {
+      document.getElementById("dvAnnotation").innerHTML = `No updates from neighbor nodes have been sent, so now each node has the shortest distance to all other nodes in the network. See graph below to see path from ${start} to ${end}`
+    }, startTimeout + 2000));
+
+    let path = getPath(start, end, costMatrix)
+
+    timeoutArr.push(setTimeout(() => {
+      graphIntervalId = setInterval(() => {
+        showPath(path)
+      }, 3000)
+    }, startTimeout + 3000));
+    
+    
+    //showPath(path);
     return costMatrix
 }
 
@@ -464,12 +502,137 @@ function getPath(start, destination, minCostMatrix) {
 }
 
 
-//let minCostMatrix = alternativeDVAlgo(graph)
-//console.log(getPath('A', 'D', minCostMatrix))
-//console.log(getPath('B', 'D', minCostMatrix))
-//console.log(getPath('E', 'C', minCostMatrix))
-//console.log('Shortest distance from E to C: ' + minCostMatrix.get('E')['distanceVector']['C']['distance'])
 
+function createDistanceVectorTable(vertex, costMatrix) {
+  let distanceVectorContainer = document.getElementById("currentDistanceVectorsContainer")
+  let table = document.createElement("table")
+  table.style.margin = "5px"
+  table.style.padding = "5px"
+  table.style.border = "1px solid black"
+  table.setAttribute("id", `${vertex}DV`)
+
+  let tablecaption = document.createElement("caption")
+  tablecaption.innerHTML = `Distance vector for ${vertex}`
+  tablecaption.style.captionSide = 'top'
+  tablecaption.style.padding = "10px"
+
+  let tableHeader = document.createElement("thead")
+  let tableHeaderRow = document.createElement("tr")
+
+  //create table header:
+  let tableHeadElement = document.createElement("th");
+  tableHeadElement.innerHTML = "Vertex";
+  tableHeaderRow.appendChild(tableHeadElement);
+
+  tableHeadElement = document.createElement("th");
+  tableHeadElement.innerHTML = "Distance";
+  tableHeaderRow.appendChild(tableHeadElement);
+
+  tableHeadElement = document.createElement("th");
+  tableHeadElement.innerHTML = "Hop";
+  tableHeaderRow.appendChild(tableHeadElement);
+
+  tableHeader.appendChild(tableHeaderRow);
+  table.appendChild(tableHeader);
+  table.appendChild(tablecaption)
+
+  distanceVectorContainer.appendChild(table)
+
+  let distanceVector = costMatrix.get(vertex)['distanceVector']
+  
+  let tableBody = document.createElement("tbody")
+
+  //add table rows
+  for(let key of Object.keys(distanceVector)){
+      let tableRow = document.createElement("tr")
+      
+      let vertexTableEntry = document.createElement("td")
+      vertexTableEntry.innerHTML = key
+
+      let distanceTableEntry = document.createElement("td")
+      distanceTableEntry.innerHTML = distanceVector[key]['distance']
+
+      let hopTableEntry = document.createElement("td")
+      hopTableEntry.innerHTML = distanceVector[key]['hop'] === null ? "None" : distanceVector[key]['hop']
+
+      tableRow.appendChild(vertexTableEntry)
+      tableRow.appendChild(distanceTableEntry)
+      tableRow.appendChild(hopTableEntry)
+
+      tableBody.appendChild(tableRow)
+  }
+
+  table.appendChild(tableBody)
+  
+}
+
+function updateDistanceVectorTable(vertex, distanceVector) {
+  let table = document.getElementById(`${vertex}DV`)
+  let tableBody = table.querySelector("tbody")
+
+  //delete the current rows of the table body
+  while(tableBody.firstChild) {
+    tableBody.removeChild(tableBody.firstChild)
+  }
+
+  //update distance vector table for vertex
+  for(let key of Object.keys(distanceVector)){
+    let tableRow = document.createElement("tr")
+    
+    let vertexTableEntry = document.createElement("td")
+    vertexTableEntry.innerHTML = key
+
+    let distanceTableEntry = document.createElement("td")
+    distanceTableEntry.innerHTML = distanceVector[key]['distance']
+
+    let hopTableEntry = document.createElement("td")
+    hopTableEntry.innerHTML = distanceVector[key]['hop'] === null ? "None" : distanceVector[key]['hop']
+
+    tableRow.appendChild(vertexTableEntry)
+    tableRow.appendChild(distanceTableEntry)
+    tableRow.appendChild(hopTableEntry)
+
+    tableBody.appendChild(tableRow)
+  }
+
+}
+
+function createTables(costMatrix){
+  for(let vertex of costMatrix.keys()){
+    createDistanceVectorTable(vertex, costMatrix)
+  }
+}
+
+function initializeAnnotations() {
+  if(document.getElementById("dvAnnotation")) {
+    let element = document.getElementById("dvAnnotation")
+    element.innerHTML = ""
+  }
+
+  if(document.getElementById("currentDistanceVectorsContainer")){
+    let container = document.getElementById("currentDistanceVectorsContainer")
+    container.innerHTML = ""
+  }
+
+  //add annotation text box to explain what algorithm is doing at each step
+  let dvAnnotationsContainer = document.getElementById("dvAnnotationsContainer")
+  let annotation = document.createElement("h5")
+  annotation.setAttribute("id", "dvAnnotation")
+  annotation.innerHTML = ""
+
+
+  //add table container to html
+  let currentDistanceVectorsContainer = document.createElement("div")
+  currentDistanceVectorsContainer.setAttribute("id", "currentDistanceVectorsContainer")
+  currentDistanceVectorsContainer.style.display = "flex"
+  currentDistanceVectorsContainer.style.flexDirection = "row"
+  currentDistanceVectorsContainer.style.flexWrap= "wrap"
+
+  //append new html elements to the dom
+  dvAnnotationsContainer.appendChild(annotation)
+  dvAnnotationsContainer.appendChild(currentDistanceVectorsContainer)
+
+}
 
 function runDV(start, end){
   //create a new Graph adjacency List
@@ -483,15 +646,8 @@ function runDV(start, end){
   currentgraph.addEdge( ele.source().id(),ele.target().id(), parseInt(ele.data('weight')));
  });
  //run the First Distance vector Algorithm 
- let result = dvAlgo(currentgraph,start,end)
- //run the animation
- highlightPathAnimated(result.path)
- //display the path and cost
- document.getElementById("dvPath").innerHTML=result.path;
- document.getElementById("dvCost").innerHTML=result.distance;
- //implmentation of altDVA
- //let result2= alternativeDVAlgo(currentgraph)
- //console.log(result2)
+ initializeAnnotations();
+ let result2 = alternativeDVAlgo(currentgraph, highlightPathAnimated, start, end);
 }
 
 //dynamically generate the drop down menus for DV algo
@@ -540,6 +696,11 @@ window.addEventListener("load", (event) => {
 document.getElementById("dvButton").addEventListener("click", function () {
   let start = document.getElementById("dvNode1").value;
   let end = document.getElementById("dvNode2").value;
+  //clear timeouts
+  clearInterval(graphIntervalId);
+  timeoutArr.forEach(clearTimeout)
+
+  //run dv algo
   runDV(start, end);
 });
 
