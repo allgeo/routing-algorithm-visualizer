@@ -65,52 +65,41 @@
                     <label for="dropdown" class="form-label"
                         >Choose a Routing Algorithm</label
                     >
-                    <select class="form-select" id="dropdown">
+                    <select
+                        class="form-select"
+                        id="dropdown"
+                        onchange="dropdown()"
+                    >
                         <option value="1">Dijkstra's algorithm</option>
                         <option value="2">Distance-vector algorithm</option>
                     </select>
 
-                    <!-- <div class="d-flex justify-content-between align-items-center">
-                            <div class="dropdown">
-                                <div class="btn-group">
-                                    <button
-                                        type="button"
-                                        class="btn btn-secondary dropdown-toggle"
-                                        data-bs-toggle="dropdown"
-                                        data-bs-display="static"
-                                        aria-expanded="false"
-                                    >
-                                        Choose a Routing Algorithm
-                                    </button>
-        
-                                    <ul class="dropdown-menu dropdown-menu-lg-end">
-                                        <li>
-                                            <button class="dropdown-item" type="button">
-                                                Dijkstra's algorithm
-                                            </button>
-                                        </li>
-                                        <li>
-                                            <button class="dropdown-item" type="button">
-                                                Distance-vector algorithm
-                                            </button>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <button type="button" class="btn btn-dark">
-                                Find Route
-                            </button>
-                        </div> -->
                 </div>
             </div>
-
+            <div style="margin-bottom: 10px;" id="dvSelect" hidden>
+                <div class="row" style="margin-bottom: 10px;">
+                    <div class="col-md-2 col-sm-12">
+                        <label class="form-label" >  <code style="color:black" >Select starting node</code> </label>
+                        <select class="form-select dvNode" id="dvNode1" style="width: 200px"></select>
+                    </div>
+                    <div class="col-md-2 col-sm-12">
+                        <label class="form-label" ><code style="color:black" >Select ending node</code></label>
+                        <select class="form-select dvNode" id="dvNode2" style="width: 200px"></select>
+                    </div>
+                    <div class="col-md-2 col-sm-12 d-flex justify-content-center align-items-end">
+                        <button type="button" class="btn btn-dark" id="dvButton"><code style="color:white" >Run DV Algorithm</code></button>
+                    </div>
+                </div>
+            </div>
+            
             <!-- Graph using CytoScape -->
-            <div
-                id="cy"
-                class="rounded border border-dark"
-                id="container"
-                style="height: 550px; width: 100%"
-            ></div>
+            <div id="cy" class="rounded border border-dark" id="container" style="height: 550px; width: 100%"></div>
+                
+            <!-- Generating tables  -->
+            <div style="margin: 20px 20px;">
+                <div id="dvAnnotationsContainer"></div>
+            </div>
+
             <br />
 
             <div class="d-flex justify-content-between align-items-center">
@@ -120,182 +109,24 @@
                     id="submitBtn"
                     class="btn btn-dark btn-lg"
                 >
-                    Submit
+                    Update Graph
                 </button>
             </div>
             <br />
-            <div class="row g-2">
-                <div class="col-3 col-md-2">
-                    <div class="form-floating">
-                        <input class="form-control" id="n0TOn1" />
-                        <label for="">n0TOn1</label>
-                    </div>
-                </div>
-                <div class="col-3 col-md-2">
-                    <div class="form-floating">
-                        <input class="form-control" id="n0TOn3" />
-                        <label for="">n0TOn3</label>
-                    </div>
-                </div>
-                <div class="col-3 col-md-2">
-                    <div class="form-floating">
-                        <input class="form-control" id="n0TOn4" />
-                        <label for="">n0TOn4</label>
-                    </div>
-                </div>
-                <div class="col-3 col-md-2">
-                    <div class="form-floating">
-                        <input class="form-control" id="n1TOn2" />
-                        <label for="">n1TOn2</label>
-                    </div>
-                </div>
-                <div class="col-3 col-md-2">
-                    <div class="form-floating">
-                        <input class="form-control" id="n2TOn3" />
-                        <label for="">n2TOn3</label>
-                    </div>
-                </div>
 
-                <div class="col-3 col-md-2">
-                    <div class="form-floating">
-                        <input class="form-control" id="n3TOn4" />
-                        <label for="">n3TOn4</label>
-                    </div>
-                </div>
-                <div class="col-3 col-md-2">
-                    <div class="form-floating">
-                        <input class="form-control" id="n2TOn7" />
-                        <label for="">n2TOn7</label>
-                    </div>
-                </div>
+            <!-- Nodes -->
+            <div class="row g-2" id="weightBoxes"> </div>
 
-                <div class="col-3 col-md-2">
-                    <div class="form-floating">
-                        <input class="form-control" id="n3TOn6" />
-                        <label for="">n3TOn6</label>
-                    </div>
-                </div>
-                <div class="col-3 col-md-2">
-                    <div class="form-floating">
-                        <input class="form-control" id="n3TOn7" />
-                        <label for="">n3TOn7</label>
-                    </div>
-                </div>
-                <div class="col-3 col-md-2">
-                    <div class="form-floating">
-                        <input class="form-control" id="n4TOn5" />
-                        <label for="">n4TOn5</label>
-                    </div>
-                </div>
-                <div class="col-3 col-md-2">
-                    <div class="form-floating">
-                        <input class="form-control" id="n5TOn6" />
-                        <label for="">n5TOn6</label>
-                    </div>
-                </div>
-                <div class="col-3 col-md-2">
-                    <div class="form-floating">
-                        <input class="form-control" id="n5TOn10" />
-                        <label for="">n5TOn10</label>
-                    </div>
-                </div>
-                <div class="col-3 col-md-2">
-                    <div class="form-floating">
-                        <input class="form-control" id="n6TOn7" />
-                        <label for="">n6TOn7</label>
-                    </div>
-                </div>
-                <div class="col-3 col-md-2">
-                    <div class="form-floating">
-                        <input class="form-control" id="n7TOn9" />
-                        <label for="">n7TOn9</label>
-                    </div>
-                </div>
-                <div class="col-3 col-md-2">
-                    <div class="form-floating">
-                        <input class="form-control" id="n7TOn8" />
-                        <label for="">n7TOn8</label>
-                    </div>
-                </div>
-                <div class="col-3 col-md-2">
-                    <div class="form-floating">
-                        <input class="form-control" id="n8TOn9" />
-                        <label for="">n8TOn9</label>
-                    </div>
-                </div>
-                <div class="col-3 col-md-2">
-                    <div class="form-floating">
-                        <input class="form-control" id="n8TOn11" />
-                        <label for="">n8TOn11</label>
-                    </div>
-                </div>
-                <div class="col-3 col-md-2">
-                    <div class="form-floating">
-                        <input class="form-control" id="n10TOn11" />
-                        <label for="">n10TOn11</label>
-                    </div>
-                </div>
 
-                <br />
+            <br>
+            <div class="d-flex justify-content-between align-items-center">
+                <button type="submit" id="addNode" class="btn btn-dark btn-lg">
+                    Add Node
+                </button>
             </div>
+            <br />
 
-            <br /><br />
-
-            <div class="rounded border">
-                <div class="mx-5 my-5">
-                    <h5>Update as of March 9th, 2023 (for group members)</h5>
-                    <br />
-                    <h6>Whats Done</h6>
-
-                    <ul>
-                        <li>
-                            Uses <code>cytoscapes.js</code> to generate and and
-                            manupulate the graph.
-                        </li>
-                        <li>
-                            Uses Bootstrap 5.2 to for styling and components
-                        </li>
-
-                        <li>
-                            Users are able to update the graph weight by
-                            entering values into the input field, then by
-                            pressing the submit button.
-                        </li>
-                        <li>
-                            The submitted weight is presistant since its stored
-                            in browser local storage. Meaning, refreshing the
-                            page will keep the previously entered data. As long
-                            as the browser cache isn't cleared, the previous
-                            data will be kept.
-                        </li>
-                    </ul>
-                    <h6>Whats Left</h6>
-                    <ul>
-                        <li>
-                            At the moment, cytoscapes stores the weight values
-                            as string (even if its a number, its represented as
-                            string). Need to implement a validation so that
-                            users can only enter numbers.
-                        </li>
-                        <li>
-                            Whenever you refresh the page, the orientation of
-                            the graph changes (but all the nodes and edges are
-                            same). There is a way to hardcode each node to a set
-                            point using cytoscape but still need to do that
-                        </li>
-                        <li>
-                            The "Choose a Routing Algorithm" dropdown isnt
-                            functional, since we havent inplement the algorithm
-                            for it it.
-                        </li>
-                        <li>
-                            There is also a way to highlight nodes and edges
-                            using cytoscape, so we could use that to highlight
-                            the path that the algorithm takes.
-                        </li>
-                    </ul>
-                </div>
-            </div>
+ 
         </div>
 
         <!-- Footer -->
@@ -306,6 +137,9 @@
 
         <!-- Cytoscape script to generate the graph -->
         <script src="cytoscape.js"></script>
+        <script src="dvAlgo.js"></script>
+        <script src="dijkstra.js"></script>
+
 
         <!-- Bootstrap JS -->
         <script
