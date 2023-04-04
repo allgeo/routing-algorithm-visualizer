@@ -18,22 +18,43 @@ var cy = (window.cy = cytoscape({
                 "text-rotation": "autorotate",
             },
         },
+        {
+            selector: "edge.highlighted",
+            css: {
+                "line-color": "red",
+                "target-arrow-color": "red",
+                "source-arrow-color": "red",
+                "z-index": 100,
+            },
+        },
+        {
+            selector: "node.start-highlighted",
+            style: {
+                "background-color": "green",
+            },
+        },
+        {
+            selector: "node.end-highlighted",
+            style: {
+                "background-color": "blue",
+            },
+        },
     ],
 
     elements: {
         nodes: [
-            { data: { id: "n0" } },
-            { data: { id: "n1" } },
-            { data: { id: "n2" } },
-            { data: { id: "n3" } },
-            { data: { id: "n4" } },
-            { data: { id: "n5" } },
-            { data: { id: "n6" } },
-            { data: { id: "n7" } },
-            { data: { id: "n8" } },
-            { data: { id: "n9" } },
-            { data: { id: "n10" } },
-            { data: { id: "n11" } },
+            { data: { id: "n0" }, position: { x: -25, y: 100 } },
+            { data: { id: "n1" }, position: { x: 125, y: 100 } },
+            { data: { id: "n2" }, position: { x: 300, y: 100 } },
+            { data: { id: "n3" }, position: { x: 125, y: 200 } },
+            { data: { id: "n4" }, position: { x: -25, y: 200 } },
+            { data: { id: "n5" }, position: { x: -100, y: 300 } },
+            { data: { id: "n6" }, position: { x: 125, y: 300 } },
+            { data: { id: "n7" }, position: { x: 300, y: 300 } },
+            { data: { id: "n8" }, position: { x: 400, y: 0 } },
+            { data: { id: "n9" }, position: { x: 400, y: 300 } },
+            { data: { id: "n10" }, position: { x: -100, y: 0 } },
+            { data: { id: "n11" }, position: { x: 200, y: 0 } },
         ],
         edges: [
             { data: { id: "n0n1", source: "n0", target: "n1", weight: 3 } },
@@ -58,277 +79,69 @@ var cy = (window.cy = cytoscape({
     },
 }));
 
-var edges = [
-    { edgeId: "#n0n1", weightInputId: "n0TOn1" },
-    { edgeId: "#n0n3", weightInputId: "n0TOn3" },
-    { edgeId: "#n0n4", weightInputId: "n0TOn4" },
-    { edgeId: "#n1n2", weightInputId: "n1TOn2" },
-    { edgeId: "#n2n7", weightInputId: "n2TOn7" },
-    { edgeId: "#n2n3", weightInputId: "n2TOn3" },
-    { edgeId: "#n3n4", weightInputId: "n3TOn4" },
-    { edgeId: "#n3n6", weightInputId: "n3TOn6" },
-    { edgeId: "#n3n7", weightInputId: "n3TOn7" },
-    { edgeId: "#n4n5", weightInputId: "n4TOn5" },
-    { edgeId: "#n5n6", weightInputId: "n5TOn6" },
-    { edgeId: "#n5n10", weightInputId: "n5TOn10" },
-    { edgeId: "#n6n7", weightInputId: "n6TOn7" },
-    { edgeId: "#n7n9", weightInputId: "n7TOn9" },
-    { edgeId: "#n7n8", weightInputId: "n7TOn8" },
-    { edgeId: "#n8n9", weightInputId: "n8TOn9" },
-    { edgeId: "#n8n11", weightInputId: "n8TOn11" },
-    { edgeId: "#n10n11", weightInputId: "n10TOn11" },
-];
+var edges = [];
 
-// Create a class to represent a weighted graph in adjacency list format
-class GraphAdjacencyList {
-    constructor() {
-        this.nodes = new Map();
-    }
+//create the edge array dynamically from the cytoscape graph
+function fillEdges() {
+    cy.edges().forEach(function (ele) {
+        let newEdge = {
+            edgeId: "#" + ele.id(),
+            weightInputId: ele.source().id() + "TO" + ele.target().id(),
+        };
+        edges.push(newEdge);
+    });
+}
+fillEdges();
 
-    addNode(node) {
-        if (!this.nodes.has(node)) {
-            this.nodes.set(node, []);
-        }
-    }
-
-    addEdge(node1, node2, weight) {
-        if (this.nodes.has(node1) && this.nodes.has(node2)) {
-            this.nodes.get(node1).push({ node: node2, weight: weight });
-            this.nodes.get(node2).push({ node: node1, weight: weight });
-        }
-    }
-
-    // Print the graph in adjacency list format for visualization in console
-    printGraph() {
-        for (const [node, edges] of this.nodes.entries()) {
-            const connections = edges
-                .map((edge) => `${edge.node}(${edge.weight})`)
-                .join(", ");
-            console.log(`${node} -> ${connections}`);
-        }
-    }
-
-    returnGraph() {}
+function createWeightBox(edgeName) {
+    let container = document.createElement("div");
+    container.className = "col-3 col-md-2";
+    let weightBox = document.createElement("div");
+    weightBox.className = "form-floating";
+    let inputBox = document.createElement("input");
+    inputBox.className = "form-control";
+    //inputBox.type = "text";
+    inputBox.id = edgeName;
+    let label = document.createElement("label");
+    label.for = "";
+    label.innerHTML = edgeName;
+    weightBox.appendChild(inputBox);
+    weightBox.appendChild(label);
+    container.appendChild(weightBox);
+    document.getElementById("weightBoxes").appendChild(container);
 }
 
+// Create the weight input boxes
+cy.edges().forEach(function (ele) {
+    let edgeName = ele.source().id() + "TO" + ele.target().id();
+    createWeightBox(edgeName);
+});
 
-function dijkstra(graph, startNode, endNode){
-    //Sets for visited nodes and unvisited nodes 
-    const visited = new Set();
-    const unvisited = new Set(graph.nodes.keys());
-    //Map to keep track of predecessor node and and one for distances
-    const predecessor = new Map();
-    const distances = new Map();
-
-    //Initialize all node distances to startNode as infinite except startNode which is 0 
-    for (const node of unvisited) {
-        distances.set(node, Infinity);
-    }
-    distances.set(startNode, 0);
-
-    //Loop through unvisited nodes finding node with least distance to previous node 
-    while(unvisited.size > 0){
-        let minNode = null; 
-        let minDist = Infinity;
-        for (const node of unvisited){
-            if (distances.get(node) < minDist){
-                minDist = distances.get(node);
-                minNode = node;    
-            }
-        }
-        
-        if(minNode == endNode){
-            break;
-        }
-        //Add node with least distance to previous node to visited and remove from unvisited
-        visited.add(minNode);
-        unvisited.delete(minNode);
-
-        //Unvisited neighbour nodes of current visited node 
-        const neighbours = graph.nodes.get(minNode);
-        //Loop through unvisited neighbor nodes 
-        for(const neighbour of neighbours){
-            if(!visited.has(neighbour.node)){
-                //Calculate distance to from current visited node to neighbour node 
-                const distToNeighbour = distances.get(minNode) + neighbour.weight;
-                //Update distance to neighbour node if new distance is shorter than distance to current 
-                if (distToNeighbour < distances.get(neighbour.node)){
-                    distances.set(neighbour.node, distToNeighbour);
-                    //Update predecessor node as distance to neighbour updates
-                    predecessor.set(neighbour.node, minNode);
-                } 
-            }
-        }
-    }     
-
-    //Build shortest path from start node to end node from map of predecessor nodes
-    const path = [];
-    let current = endNode;
-    while(predecessor.has(current)){
-        path.unshift(current);
-        current = predecessor.get(current);
-    }
-    path.unshift(startNode);
-    
-    //Return path and distance
-    return { path, distances, distance: distances.get(endNode) };
-
-}
-
-
-/*
------------------------------------------------------------------------------------------------------------------
-*/
-
-function dijkstra(graph, source) {
-    // Create distance and previous maps
-    const distances = new Map();
-    const previous = new Map();
-
-    // Set the distance to the source node to 0 and all other nodes to infinity
-    for (const node of graph.nodes.keys()) {
-        distances.set(node, Infinity);
-        previous.set(node, null);
-    }
-    distances.set(source, 0);
-
-    // Create a priority queue and enqueue the source node with distance 0
-    const queue = new PriorityQueue();
-    queue.enqueue(source, 0);
-}
-
-// Add event listener to submit button & storeing the weight values in localStorage for data presistance
+// Add event listener to submit button
 document.getElementById("submitBtn").addEventListener("click", function () {
     // Loop through the edges array
     edges.forEach(function (edge) {
+        console.log = edge;
         // Get the weight value from input
-        // console.log(edge);
         var weight = document.getElementById(edge.weightInputId).value;
-        //console.log(weight);
-
-        // Store the weight value in localStorage
-        localStorage.setItem(edge.weightInputId, weight);
-
-        // Update the edge data with the new weight value
-        cy.$(edge.edgeId).data("weight", weight);
+        if (isNaN(parseInt(weight))) {
+            //            console.log("Not a number, not updated")
+        } else {
+            // Store the weight value in localStorage
+            localStorage.setItem(edge.weightInputId, weight);
+            // Update the edge data with the new weight value
+            cy.$(edge.edgeId).data("weight", weight);
+        }
     });
-
-    //Create a new GraphAdjacencyList object on submit and fill it with the data from the cytoscape graph
-    var graph = new GraphAdjacencyList();
-
-    // Add nodes from Cytoscape to the graph
-    graph.addNode("n0");
-    graph.addNode("n1");
-    graph.addNode("n2");
-    graph.addNode("n3");
-    graph.addNode("n4");
-    graph.addNode("n5");
-    graph.addNode("n6");
-    graph.addNode("n7");
-    graph.addNode("n8");
-    graph.addNode("n9");
-    graph.addNode("n10");
-    graph.addNode("n11");
-
-    // Add edges with weights from the cytoscape graph while also converting the weight values from string to integer
-    graph.addEdge(
-        "n0",
-        "n1",
-        parseInt(document.getElementById("n0TOn1").value, 10)
-    );
-    graph.addEdge(
-        "n0",
-        "n3",
-        parseInt(document.getElementById("n0TOn3").value, 10)
-    );
-    graph.addEdge(
-        "n0",
-        "n4",
-        parseInt(document.getElementById("n0TOn4").value, 10)
-    );
-    graph.addEdge(
-        "n1",
-        "n2",
-        parseInt(document.getElementById("n1TOn2").value, 10)
-    );
-    graph.addEdge(
-        "n2",
-        "n7",
-        parseInt(document.getElementById("n2TOn7").value, 10)
-    );
-    graph.addEdge(
-        "n2",
-        "n3",
-        parseInt(document.getElementById("n2TOn3").value, 10)
-    );
-    graph.addEdge(
-        "n3",
-        "n4",
-        parseInt(document.getElementById("n3TOn4").value, 10)
-    );
-    graph.addEdge(
-        "n3",
-        "n6",
-        parseInt(document.getElementById("n3TOn6").value, 10)
-    );
-    graph.addEdge(
-        "n3",
-        "n7",
-        parseInt(document.getElementById("n3TOn7").value, 10)
-    );
-    graph.addEdge(
-        "n4",
-        "n5",
-        parseInt(document.getElementById("n4TOn5").value, 10)
-    );
-    graph.addEdge(
-        "n5",
-        "n6",
-        parseInt(document.getElementById("n5TOn6").value, 10)
-    );
-    graph.addEdge(
-        "n5",
-        "n10",
-        parseInt(document.getElementById("n5TOn10").value, 10)
-    );
-    graph.addEdge(
-        "n6",
-        "n7",
-        parseInt(document.getElementById("n6TOn7").value, 10)
-    );
-    graph.addEdge(
-        "n7",
-        "n9",
-        parseInt(document.getElementById("n7TOn9").value, 10)
-    );
-    graph.addEdge(
-        "n7",
-        "n8",
-        parseInt(document.getElementById("n7TOn8").value, 10)
-    );
-    graph.addEdge(
-        "n8",
-        "n9",
-        parseInt(document.getElementById("n8TOn9").value, 10)
-    );
-    graph.addEdge(
-        "n8",
-        "n11",
-        parseInt(document.getElementById("n8TOn11").value, 10)
-    );
-    graph.addEdge(
-        "n10",
-        "n11",
-        parseInt(document.getElementById("n10TOn11").value, 10)
-    );
-    graph.printGraph();
 });
 
 // On page load, retrieve the weight values from the localStorage and update the edge data with them
-edges.forEach(function (edge) {
-    var storedWeight = localStorage.getItem(edge.weightInputId);
-    if (storedWeight) {
-        cy.$(edge.edgeId).data("weight", storedWeight);
-        document.getElementById(edge.weightInputId).value = storedWeight;
-    }
-});
+function getStoredWeight() {
+    edges.forEach(function (edge) {
+        var storedWeight = localStorage.getItem(edge.weightInputId);
+        if (storedWeight) {
+            cy.$(edge.edgeId).data("weight", storedWeight);
+            document.getElementById(edge.weightInputId).value = storedWeight;
+        }
+    });
+}
