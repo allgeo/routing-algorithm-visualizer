@@ -65,7 +65,11 @@
                     <label for="dropdown" class="form-label"
                         >Choose a Routing Algorithm</label
                     >
-                    <select class="form-select" id="dropdown" onchange="dropdown()">
+                    <select
+                        class="form-select"
+                        id="dropdown"
+                        onchange="dropdown()"
+                    >
                         <option value="1">Dijkstra's algorithm</option>
                         <option value="2">Distance-vector algorithm</option>
                     </select>
@@ -103,28 +107,30 @@
                         </div> -->
                 </div>
             </div>
-            <div id="dvSelect" hidden>
-                <label>Select starting node:
-                    <select class="dvNode", id="dvNode1">
-                    </select>
-                </label>
-                <label>Select ending node:
-                    <select class="dvNode", id="dvNode2">
-                    </select>
-                </label>
-                <div id="dvAnnotationsContainer"></div>
-            <!-- <p>Path:   </p><p id="dvPath"></p>            Cost:   <p id="dvCost"></p> -->
-
-            <button type="button" class="btn btn-primary" id="dvButton">Run DV Algorithm</button>
-
+            <div style="margin-bottom: 10px;" id="dvSelect" hidden>
+                <div class="row" style="margin-bottom: 10px;">
+                    <div class="col-md-2 col-sm-12">
+                        <label class="form-label" >  <code style="color:black" >Select starting node</code> </label>
+                        <select class="form-select dvNode" id="dvNode1" style="width: 200px"></select>
+                    </div>
+                    <div class="col-md-2 col-sm-12">
+                        <label class="form-label" ><code style="color:black" >Select ending node</code></label>
+                        <select class="form-select dvNode" id="dvNode2" style="width: 200px"></select>
+                    </div>
+                    <div class="col-md-2 col-sm-12 d-flex justify-content-center align-items-end">
+                        <button type="button" class="btn btn-dark" id="dvButton"><code style="color:white" >Run DV Algorithm</code></button>
+                    </div>
+                </div>
             </div>
+            
             <!-- Graph using CytoScape -->
-            <div
-                id="cy"
-                class="rounded border border-dark"
-                id="container"
-                style="height: 550px; width: 100%"
-            ></div>
+            <div id="cy" class="rounded border border-dark" id="container" style="height: 550px; width: 100%"></div>
+                
+            <!-- Generating tables  -->
+            <div style="margin: 20px 20px;">
+                <div id="dvAnnotationsContainer"></div>
+            </div>
+
             <br />
 
             <div class="d-flex justify-content-between align-items-center">
@@ -134,11 +140,11 @@
                     id="submitBtn"
                     class="btn btn-dark btn-lg"
                 >
-                    Submit
+                    Update Graph
                 </button>
             </div>
             <br />
-            
+
             <div class="row g-2" id="weightBoxes">
                 <!--
                 <div class="col-3 col-md-2">
@@ -321,6 +327,9 @@
                     </ul>
                 </div>
             </div>
+            <br />
+
+ 
         </div>
 
         <!-- Footer -->
@@ -331,6 +340,7 @@
 
         <!-- Cytoscape script to generate the graph -->
         <script src="cytoscape.js"></script>
+        <script src="dvAlgo.js"></script>
 
         <!-- Bootstrap JS -->
         <script
