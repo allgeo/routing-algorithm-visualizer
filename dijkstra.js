@@ -53,20 +53,18 @@ function dijkstra(graph, startNode, endNode){
             }
         }
         
-        if(minNode == endNode){
-            break;
-        }
+      
         //Add node with least distance to previous node to visited and remove from unvisited
         visited.add(minNode);
         unvisited.delete(minNode);
 
         //Unvisited neighbour nodes of current visited node 
-        const neighbours = graph.nodes.get(minNode);
+        let neighbours = graph.nodes.get(minNode);
         //Loop through unvisited neighbor nodes 
-        for(const neighbour of neighbours){
+        for(let neighbour of neighbours){
             if(!visited.has(neighbour.node)){
                 //Calculate distance to from current visited node to neighbour node 
-                const distToNeighbour = distances.get(minNode) + neighbour.weight;
+                let distToNeighbour = distances.get(minNode) + neighbour.weight;
                 //Update distance to neighbour node if new distance is shorter than distance to current 
                 if (distToNeighbour < distances.get(neighbour.node)){
                     distances.set(neighbour.node, distToNeighbour);
@@ -85,52 +83,32 @@ function dijkstra(graph, startNode, endNode){
         current = predecessor.get(current);
     }
     path.unshift(startNode);
-    
     //Return path and distance
-    return { path, distance: distances.get(endNode) };
+    return {shortestDistToAllNodes: distances, predecessor, pathFromStartNodeToEndNode: path, distFromStartNodeToEndNode: distances.get(endNode) };
 }
 
 //NOT DONE
 function runDijkstra() {
 
-    var graph = new GraphAdjacencyList();
+    const graph = new GraphAdjacencyList();
 
-    // Add nodes from Cytoscape to the graph
-    graph.addNode("n0");
-    graph.addNode("n1");
-    graph.addNode("n2");
-    graph.addNode("n3");
-    graph.addNode("n4");
-    graph.addNode("n5");
-    graph.addNode("n6");
-    graph.addNode("n7");
-    graph.addNode("n8");
-    graph.addNode("n9");
-    graph.addNode("n10");
-    graph.addNode("n11");
-    
-    // Add edges with weights from the cytoscape graph while also converting the weight values from string to integer
-    graph.addEdge("n0","n1",parseInt(document.getElementById("n0TOn1").value, 10));
-    graph.addEdge("n0","n3",parseInt(document.getElementById("n0TOn3").value, 10));
-    graph.addEdge("n0","n4",parseInt(document.getElementById("n0TOn4").value, 10));
-    graph.addEdge("n1","n2",parseInt(document.getElementById("n1TOn2").value, 10));
-    graph.addEdge("n2","n7",parseInt(document.getElementById("n2TOn7").value, 10));
-    graph.addEdge("n2","n3",parseInt(document.getElementById("n2TOn3").value, 10));
-    graph.addEdge("n3", "n4",parseInt(document.getElementById("n3TOn4").value, 10));
-    graph.addEdge("n3","n6",parseInt(document.getElementById("n3TOn6").value, 10));
-    graph.addEdge("n3","n7",parseInt(document.getElementById("n3TOn7").value, 10));
-    graph.addEdge("n4","n5",parseInt(document.getElementById("n4TOn5").value, 10));
-    graph.addEdge("n5","n6",parseInt(document.getElementById("n5TOn6").value, 10));
-    graph.addEdge("n5","n10",parseInt(document.getElementById("n5TOn10").value, 10));
-    graph.addEdge("n6","n7",parseInt(document.getElementById("n6TOn7").value, 10));
-    graph.addEdge("n7","n9",parseInt(document.getElementById("n7TOn9").value, 10));
-    graph.addEdge("n7","n8",parseInt(document.getElementById("n7TOn8").value, 10));
-    graph.addEdge("n8","n9",parseInt(document.getElementById("n8TOn9").value, 10));
-    graph.addEdge("n8", "n11", parseInt(document.getElementById("n8TOn11").value, 10));
-    graph.addEdge("n10", "n11", parseInt(document.getElementById("n10TOn11").value, 10));
+    //loop through nodes and add them to new graph
+    cy.nodes().forEach(function (ele) {
+        graph.addNode(ele.id());
+    });
+    //loop through edges and add them to graph
+    cy.edges().forEach(function (ele) {
+        graph.addEdge(
+            ele.source().id(),
+            ele.target().id(),
+            parseInt(ele.data("weight"))
+        );
+    });
 
     const result = dijkstra(graph, "n0", "n11");
-    const shortestPathNodes = result.path;
+    const shortestPathNodes = result.pathFromStartNodeToEndNode;
+
+    console.log(result)
 
     return shortestPathNodes;// Should ideally return [ 'n0', 'n1', 'n2', 'n7', 'n8', 'n11' ] (shortest path from n0 to n11)
 }
