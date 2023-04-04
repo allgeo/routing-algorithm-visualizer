@@ -171,7 +171,7 @@ function dijkstra(graph, startNode, endNode){
     path.unshift(startNode);
     
     //Return path and distance
-    return { path, distance: distances.get(endNode) };
+    return { path, distances, distance: distances.get(endNode) };
 
 }
 
