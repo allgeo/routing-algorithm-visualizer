@@ -42,6 +42,16 @@ function dijkstra(graph, startNode, endNode){
     }
     distances.set(startNode, 0);
 
+    createDijkstraTable(graph, visited, unvisited, predecessor, distances);
+
+    //arrays used to keep track of changes in distance, predecessors, visted and unvisted nodes as algorithm progresses
+    let visitedUpdates = []
+    let unvisitedUpdates = []
+    let predecessorUpdates = []
+    let distancesUpdates = []
+    let minNodesUpdates = []
+
+
     //Loop through unvisited nodes finding node with least distance to previous node 
     while(unvisited.size > 0){
         let minNode = null; 
@@ -58,6 +68,12 @@ function dijkstra(graph, startNode, endNode){
         visited.add(minNode);
         unvisited.delete(minNode);
 
+        minNodesUpdates.push(minNode);
+        visitedUpdates.push(createSetCopy(visited));
+        unvisitedUpdates.push(createSetCopy(unvisited));
+        distancesUpdates.push(createMapCopy(distances));
+        predecessorUpdates.push(createMapCopy(predecessor));
+
         //Unvisited neighbour nodes of current visited node 
         let neighbours = graph.nodes.get(minNode);
         //Loop through unvisited neighbor nodes 
@@ -73,8 +89,23 @@ function dijkstra(graph, startNode, endNode){
                 } 
             }
         }
-    }     
 
+    }
+    
+    let timeout = 0;
+
+    for(let i=0; i<distancesUpdates.length; i++) {
+        setTimeout(() => {
+            document.getElementById("dijkstraAnnotation").innerHTML = (`Unvisted node with smallest distance is ${minNodesUpdates[i]}`)
+            updateDijkstraTable(graph, visitedUpdates[i], unvisitedUpdates[i], predecessorUpdates[i], distancesUpdates[i])
+        }, timeout)
+
+        timeout += 3000;
+
+    }
+
+    
+    
     //Build shortest path from start node to end node from map of predecessor nodes
     const path = [];
     let current = endNode;
@@ -83,6 +114,8 @@ function dijkstra(graph, startNode, endNode){
         current = predecessor.get(current);
     }
     path.unshift(startNode);
+
+
     //Return path and distance
     return {shortestDistToAllNodes: distances, predecessor, pathFromStartNodeToEndNode: path, distFromStartNodeToEndNode: distances.get(endNode) };
 }
@@ -105,12 +138,182 @@ function runDijkstra() {
         );
     });
 
+    initializeDijkstraAnnotations();
+
     const result = dijkstra(graph, "n0", "n11");
     const shortestPathNodes = result.pathFromStartNodeToEndNode;
-
-    console.log(result)
+    //console.log(result)
 
     return shortestPathNodes;// Should ideally return [ 'n0', 'n1', 'n2', 'n7', 'n8', 'n11' ] (shortest path from n0 to n11)
 }
 
-runDijkstra()
+window.addEventListener("load", (event) => {
+    //assignDropDown(); //dynamically fill DV dropboxes
+    getStoredWeight(); //get stored values for the weight boxes
+    runDijkstra();
+  });
+
+
+function createSetCopy(set) {
+    let copy = new Set();
+    for(let item of set) {
+        copy.add(item);
+    }
+
+    return copy;
+}
+
+
+//fuction used to create deep copy distance and predecessor maps
+function createMapCopy(map) {
+    let copy = new Map();
+
+    for(let key of map.keys()) {
+        copy.set(key, map.get(key))
+    }
+
+    return copy;
+}
+
+function initializeDijkstraAnnotations(){
+    if(document.getElementById("dijkstraAnnotation")) {
+        let element = document.getElementById("dijkstraAnnotation");
+        element.innerHTML = "";
+    } 
+
+    if(document.getElementById("dijkstraDisTableContainer")) {
+        let element = document.getElementById("dijkstraDisTableContainer");
+        element.innerHTML = "";
+    }
+
+    let annotationsContainer = document.getElementById("algoAnnotationsContainer");
+    //create annotation to explain what is going on at each step of dijksta algo
+    let dijkstraAnnotation = document.createElement("h5");
+    dijkstraAnnotation.setAttribute("id", "dijkstraAnnotation");
+    dijkstraAnnotation.innerHTML = "";
+    annotationsContainer.appendChild(dijkstraAnnotation);
+
+    //create container for distance table for dijkstra algo
+    let dijktraDistTableContainer = document.createElement("div");
+    dijktraDistTableContainer.setAttribute("id", "dijkstraDisTableContainer");
+    annotationsContainer.appendChild(dijktraDistTableContainer);
+
+}
+
+function createDijkstraTable(graph, visted, unvisited, predecessors, distances) {
+    let container = document.getElementById("dijkstraDisTableContainer");
+    let table = document.createElement("table");
+    table.classList.add("table", "table-bordered", "table-striped");
+    table.setAttribute("id", "dijkstraDistTable")
+
+    //create table header
+    let tableHeader = document.createElement("thead")
+    tableHeader.classList.add("table-dark");
+    let tableHeaderRow = document.createElement("tr");
+    
+    let vertexHeader = document.createElement("th")
+    vertexHeader.innerHTML = "Vertex";
+
+    let vistedHeader =document.createElement("th");
+    vistedHeader.innerHTML ="Visted";
+
+    let distanceHeader = document.createElement("th");
+    distanceHeader.innerHTML = "Distance";
+
+    let parentHeader = document.createElement("th");
+    parentHeader.innerHTML = "Parent";
+
+    tableHeaderRow.appendChild(vertexHeader);
+    tableHeaderRow.appendChild(vistedHeader);
+    tableHeaderRow.appendChild(distanceHeader);
+    tableHeaderRow.appendChild(parentHeader);
+
+    tableHeader.appendChild(tableHeaderRow);
+    table.appendChild(tableHeader);
+
+    //add in rows
+    let tableBody = document.createElement("tbody");
+    for(let node of graph.nodes.keys()) {
+        let tableRow = document.createElement("tr");
+        
+        let vertexEntry = document.createElement("td");
+        vertexEntry.innerHTML = node;
+
+        let vistedEntry = document.createElement("td");
+        
+        if(visted.has(node)) {
+            vistedEntry.innerHTML = "Visted";
+        } else if (unvisited.has(node)) {
+            vistedEntry.innerHTML = "Not Visted";
+        }
+
+        let distanceEntry = document.createElement("td");
+        distanceEntry.innerHTML = distances.get(node);
+
+        let parentEntry = document.createElement("td");
+
+        if(!predecessors.get(node)) {
+            parentEntry.innerHTML = ""
+        } else {
+            parentEntry.innerHTML = predecessors.get(node);
+        }
+
+        tableRow.appendChild(vertexEntry);
+        tableRow.appendChild(vistedEntry);
+        tableRow.appendChild(distanceEntry);
+        tableRow.appendChild(parentEntry);
+
+        tableBody.appendChild(tableRow);
+    }
+
+    table.appendChild(tableBody);
+    container.appendChild(table);
+}
+
+function updateDijkstraTable(graph, visted, unvisited, predecessors, distances) {
+    let table = document.getElementById("dijkstraDistTable")
+    let tableBody = table.querySelector("tbody")
+
+    //remove all rows in table
+    while(tableBody.firstChild) {
+        tableBody.removeChild(tableBody.firstChild);
+    }
+
+    //add new rows to table body
+    for(let node of graph.nodes.keys()) {
+        let tableRow = document.createElement("tr");
+        
+        let vertexEntry = document.createElement("td");
+        vertexEntry.innerHTML = node;
+
+        let vistedEntry = document.createElement("td");
+        
+        if(visted.has(node)) {
+            vistedEntry.innerHTML = "Visted";
+        } else if (unvisited.has(node)) {
+            vistedEntry.innerHTML = "Not Visted";
+        }
+
+        let distanceEntry = document.createElement("td");
+        distanceEntry.innerHTML = distances.get(node);
+
+        let parentEntry = document.createElement("td");
+
+        if(!predecessors.get(node)) {
+            parentEntry.innerHTML = ""
+        } else {
+            parentEntry.innerHTML = predecessors.get(node);
+        }
+
+        tableRow.appendChild(vertexEntry);
+        tableRow.appendChild(vistedEntry);
+        tableRow.appendChild(distanceEntry);
+        tableRow.appendChild(parentEntry);
+
+        tableBody.appendChild(tableRow);
+    }
+
+
+}
+
+
