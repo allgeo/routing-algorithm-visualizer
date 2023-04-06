@@ -503,20 +503,14 @@ function assignDropDown() {
     }
 }
 
-function addToDropDown1(nodeId) {
+function addToDropDown(nodeId, element) {
     let option = document.createElement("option");
     option.setAttribute("value", nodeId);
     let optionText = document.createTextNode(nodeId);
     option.appendChild(optionText);
-    document.getElementById("dvNode1").appendChild(option);
+    document.getElementById(element).appendChild(option);
 }
-function addToDropDown2(nodeId) {
-    let option = document.createElement("option");
-    option.setAttribute("value", nodeId);
-    let optionText = document.createTextNode(nodeId);
-    option.appendChild(optionText);
-    document.getElementById("dvNode2").appendChild(option);
-}
+
 //events on page load
 window.addEventListener("load", (event) => {
     assignDropDown(); //dynamically fill DV dropboxes
@@ -530,9 +524,23 @@ document.getElementById("dvButton").addEventListener("click", function () {
     //clear timeouts
     clearInterval(graphIntervalId);
     timeoutArr.forEach(clearTimeout);
-
+    //find the value of the dropdown
+    let e = document.getElementById("dropdown");
+    var value = e.options[e.selectedIndex].value;
+    //1 is Dijkstra
+    if (value == 1) 
+    {
+        //clear any DV info
+        document.getElementById("currentDistanceVectorsContainer").innerHTML = "";
+        document.getElementById("dvAnnotation").innerHTML = "";
+        //run Dijkstra
+    } 
+    // else is DV
+    else 
+    {
+        runDV(start,end)
+    }
     //run dv algo
-    runDV(start, end);
 });
 
 document.getElementById("addNode").addEventListener("click", function () {
@@ -561,16 +569,6 @@ document.getElementById("addNode").addEventListener("click", function () {
     };
     edges.push(newEdge);
     createWeightBox(connection);
-    addToDropDown1("n" + newNumber);
-    addToDropDown2("n" + newNumber);
+    addToDropDown("n" + newNumber, "dvNode1");
+    addToDropDown("n" + newNumber, "dvNode2");
 });
-
-function dropdown() {
-    let e = document.getElementById("dropdown");
-    var value = e.options[e.selectedIndex].value;
-    if (value == 1) {
-        document.getElementById("dvSelect").hidden = true;
-    } else {
-        document.getElementById("dvSelect").hidden = false;
-    }
-}

@@ -68,46 +68,14 @@
                     <select
                         class="form-select"
                         id="dropdown"
-                        onchange="dropdown()"
                     >
                         <option value="1">Dijkstra's algorithm</option>
                         <option value="2">Distance-vector algorithm</option>
                     </select>
 
-                    <!-- <div class="d-flex justify-content-between align-items-center">
-                            <div class="dropdown">
-                                <div class="btn-group">
-                                    <button
-                                        type="button"
-                                        class="btn btn-secondary dropdown-toggle"
-                                        data-bs-toggle="dropdown"
-                                        data-bs-display="static"
-                                        aria-expanded="false"
-                                    >
-                                        Choose a Routing Algorithm
-                                    </button>
-        
-                                    <ul class="dropdown-menu dropdown-menu-lg-end">
-                                        <li>
-                                            <button class="dropdown-item" type="button">
-                                                Dijkstra's algorithm
-                                            </button>
-                                        </li>
-                                        <li>
-                                            <button class="dropdown-item" type="button">
-                                                Distance-vector algorithm
-                                            </button>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <button type="button" class="btn btn-dark">
-                                Find Route
-                            </button>
-                        </div> -->
                 </div>
             </div>
-            <div style="margin-bottom: 10px;" id="dvSelect" hidden>
+            <div style="margin-bottom: 10px;" id="dvSelect">
                 <div class="row" style="margin-bottom: 10px;">
                     <div class="col-md-2 col-sm-12">
                         <label class="form-label" >  <code style="color:black" >Select starting node</code> </label>
@@ -118,7 +86,7 @@
                         <select class="form-select dvNode" id="dvNode2" style="width: 200px"></select>
                     </div>
                     <div class="col-md-2 col-sm-12 d-flex justify-content-center align-items-end">
-                        <button type="button" class="btn btn-dark" id="dvButton"><code style="color:white" >Run DV Algorithm</code></button>
+                        <button type="button" class="btn btn-dark" id="dvButton"><code style="color:white" >Run Algorithm</code></button>
                     </div>
                 </div>
             </div>
@@ -146,117 +114,6 @@
             <br />
 
             <div class="row g-2" id="weightBoxes">
-                <!--
-                <div class="col-3 col-md-2">
-                    <div class="form-floating">
-                        <input class="form-control" id="n0TOn1" />
-                        <label for="">n0TOn1</label>
-                    </div>
-                </div>
-                <div class="col-3 col-md-2">
-                    <div class="form-floating">
-                        <input class="form-control" id="n0TOn3" />
-                        <label for="">n0TOn3</label>
-                    </div>
-                </div>
-                <div class="col-3 col-md-2">
-                    <div class="form-floating">
-                        <input class="form-control" id="n0TOn4" />
-                        <label for="">n0TOn4</label>
-                    </div>
-                </div>
-                <div class="col-3 col-md-2">
-                    <div class="form-floating">
-                        <input class="form-control" id="n1TOn2" />
-                        <label for="">n1TOn2</label>
-                    </div>
-                </div>
-                <div class="col-3 col-md-2">
-                    <div class="form-floating">
-                        <input class="form-control" id="n2TOn3" />
-                        <label for="">n2TOn3</label>
-                    </div>
-                </div>
-
-                <div class="col-3 col-md-2">
-                    <div class="form-floating">
-                        <input class="form-control" id="n3TOn4" />
-                        <label for="">n3TOn4</label>
-                    </div>
-                </div>
-                <div class="col-3 col-md-2">
-                    <div class="form-floating">
-                        <input class="form-control" id="n2TOn7" />
-                        <label for="">n2TOn7</label>
-                    </div>
-                </div>
-
-                <div class="col-3 col-md-2">
-                    <div class="form-floating">
-                        <input class="form-control" id="n3TOn6" />
-                        <label for="">n3TOn6</label>
-                    </div>
-                </div>
-                <div class="col-3 col-md-2">
-                    <div class="form-floating">
-                        <input class="form-control" id="n3TOn7" />
-                        <label for="">n3TOn7</label>
-                    </div>
-                </div>
-                <div class="col-3 col-md-2">
-                    <div class="form-floating">
-                        <input class="form-control" id="n4TOn5" />
-                        <label for="">n4TOn5</label>
-                    </div>
-                </div>
-                <div class="col-3 col-md-2">
-                    <div class="form-floating">
-                        <input class="form-control" id="n5TOn6" />
-                        <label for="">n5TOn6</label>
-                    </div>
-                </div>
-                <div class="col-3 col-md-2">
-                    <div class="form-floating">
-                        <input class="form-control" id="n5TOn10" />
-                        <label for="">n5TOn10</label>
-                    </div>
-                </div>
-                <div class="col-3 col-md-2">
-                    <div class="form-floating">
-                        <input class="form-control" id="n6TOn7" />
-                        <label for="">n6TOn7</label>
-                    </div>
-                </div>
-                <div class="col-3 col-md-2">
-                    <div class="form-floating">
-                        <input class="form-control" id="n7TOn9" />
-                        <label for="">n7TOn9</label>
-                    </div>
-                </div>
-                <div class="col-3 col-md-2">
-                    <div class="form-floating">
-                        <input class="form-control" id="n7TOn8" />
-                        <label for="">n7TOn8</label>
-                    </div>
-                </div>
-                <div class="col-3 col-md-2">
-                    <div class="form-floating">
-                        <input class="form-control" id="n8TOn9" />
-                        <label for="">n8TOn9</label>
-                    </div>
-                </div>
-                <div class="col-3 col-md-2">
-                    <div class="form-floating">
-                        <input class="form-control" id="n8TOn11" />
-                        <label for="">n8TOn11</label>
-                    </div>
-                </div>
-                <div class="col-3 col-md-2">
-                    <div class="form-floating">
-                        <input class="form-control" id="n10TOn11" />
-                        <label for="">n10TOn11</label>
-                    </div>
-                </div> -->
 
                 <br />
             </div>
