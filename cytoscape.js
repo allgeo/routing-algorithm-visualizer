@@ -187,28 +187,7 @@ function unhighlightEdges() {
   cy.edges().removeClass("highlighted");
 }
 
-//Test path, replace with path given by algorithms
-let path = ["n0", "n1", "n2", "n7", "n6", "n5", "n4"];
 
-//Get first and last node
-let startNodeID = path[0];
-let endNodeID = path[path.length - 1];
-
-// Highlight the starting and final node with new CSS classes
-cy.style().selector("#" + startNodeID).css({ 'background-color': 'blue', 'border-color': 'red', 'border-width': '2px' }).update();
-cy.style().selector("#" + endNodeID).css({ 'background-color': 'green', 'border-color': 'red', 'border-width': '2px' }).update();
-
-//Highlight nodes in between
-for (let i = 1; i < path.length - 1; i++) {
-  let pathNode = cy.$("#" + path[i]);
-  pathNode.addClass("path-highlighted")
-}
-
-setInterval(function() {
-  if (!animationRunning) {
-    highlightPathAnimated(path);
-  }
-}, 1000); // check every 1 second if animation is running and start again if not
 
 //click button for DV Algo
 document.getElementById("algoButton").addEventListener("click", function () {
@@ -233,6 +212,29 @@ document.getElementById("algoButton").addEventListener("click", function () {
   {
       runDV(start,end)
   }
+
+    //Test path, replace with path given by algorithms
+  let path = ["n0", "n1", "n2", "n7", "n6", "n5", "n4"];
+
+  //Get first and last node
+  let startNodeID = path[0];
+  let endNodeID = path[path.length - 1];
+
+  // Highlight the starting and final node with new CSS classes
+  cy.style().selector("#" + startNodeID).css({ 'background-color': 'blue', 'border-color': 'red', 'border-width': '2px' }).update();
+  cy.style().selector("#" + endNodeID).css({ 'background-color': 'green', 'border-color': 'red', 'border-width': '2px' }).update();
+
+  //Highlight nodes in between
+  for (let i = 1; i < path.length - 1; i++) {
+    let pathNode = cy.$("#" + path[i]);
+    pathNode.addClass("path-highlighted")
+  }
+
+  setInterval(function() {
+    if (!animationRunning) {
+      highlightPathAnimated(path);
+    }
+  }, 1000); // check every 1 second if animation is running and start again if not
   //run dv algo
 });
 
