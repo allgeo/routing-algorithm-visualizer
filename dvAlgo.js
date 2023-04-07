@@ -517,32 +517,6 @@ window.addEventListener("load", (event) => {
     getStoredWeight(); //get stored values for the weight boxes
 });
 
-//click button for DV Algo
-document.getElementById("dvButton").addEventListener("click", function () {
-    let start = document.getElementById("dvNode1").value;
-    let end = document.getElementById("dvNode2").value;
-    //clear timeouts
-    clearInterval(graphIntervalId);
-    timeoutArr.forEach(clearTimeout);
-    //find the value of the dropdown
-    let e = document.getElementById("dropdown");
-    var value = e.options[e.selectedIndex].value;
-    //1 is Dijkstra
-    if (value == 1) 
-    {
-        //clear any DV info
-        document.getElementById("currentDistanceVectorsContainer").innerHTML = "";
-        document.getElementById("dvAnnotation").innerHTML = "";
-        //run Dijkstra
-    } 
-    // else is DV
-    else 
-    {
-        runDV(start,end)
-    }
-    //run dv algo
-});
-
 document.getElementById("addNode").addEventListener("click", function () {
     let newNumber = cy.nodes().length;
     let newEdgeId = "n" + (newNumber - 1) + "n" + newNumber;
