@@ -140,6 +140,36 @@ function getStoredWeight() {
   });
 }
 
+//========== Class used to create adjacency list data structure ==================================================
+class GraphAdjacencyList {
+    constructor() {
+        this.nodes = new Map();
+    }
+
+    addNode(node) {
+        if (!this.nodes.has(node)) {
+            this.nodes.set(node, []);
+        }
+    }
+
+    addEdge(node1, node2, weight) {
+        if (this.nodes.has(node1) && this.nodes.has(node2)) {
+            this.nodes.get(node1).push({ node: node2, weight: weight });
+            this.nodes.get(node2).push({ node: node1, weight: weight });
+        }
+    }
+
+    // Print the graph in adjacency list format for visualization in console
+    printGraph() {
+        for (const [node, edges] of this.nodes.entries()) {
+            const connections = edges
+                .map((edge) => `${edge.node}(${edge.weight})`)
+                .join(", ");
+            console.log(`${node} -> ${connections}`);
+        }
+    }
+}
+
 //====ANIMATION==============================================================================
 let animationRunning = false;
 
@@ -210,6 +240,8 @@ function runAnimation(path){
 
 }
 
+
+//=======================On click function to run algorithms when "Run Algorithm" button is clicked====================================================
 //click button for DV Algo
 document.getElementById("algoButton").addEventListener("click", function () {
   let start = document.getElementById("dvNode1").value;
@@ -223,9 +255,9 @@ document.getElementById("algoButton").addEventListener("click", function () {
   //1 is Dijkstra
   if (value == 1) 
   {
-      //clear any DV info
-      document.getElementById("currentDistanceVectorsContainer").innerHTML = "";
-      document.getElementById("dvAnnotation").innerHTML = "";
+      //clear any annotations for dv algo 
+      document.getElementById("dvAnnotationsContainer").innerHTML = "";
+      console.log('dijkstra')
       //run Dijkstra goes here
   } 
   // else is DV
@@ -240,5 +272,71 @@ document.getElementById("algoButton").addEventListener("click", function () {
   runAnimation(path);
 
  
+});
+
+//dynamically generate the drop down menus for both algorithms
+function assignDropDown() {
+    nodelist = [];
+    cy.nodes().forEach(function (ele) {
+        nodelist.push(ele.id());
+    });
+    for (let i = 0; i < nodelist.length; i++) {
+        let option = document.createElement("option");
+        option.setAttribute("value", nodelist[i]);
+        let optionText = document.createTextNode(nodelist[i]);
+        option.appendChild(optionText);
+        document.getElementById("dvNode1").appendChild(option);
+    }
+    for (let i = 0; i < nodelist.length; i++) {
+        let option = document.createElement("option");
+        option.setAttribute("value", nodelist[i]);
+        let optionText = document.createTextNode(nodelist[i]);
+        option.appendChild(optionText);
+        document.getElementById("dvNode2").appendChild(option);
+    }
+}
+
+function addToDropDown(nodeId, element) {
+    let option = document.createElement("option");
+    option.setAttribute("value", nodeId);
+    let optionText = document.createTextNode(nodeId);
+    option.appendChild(optionText);
+    document.getElementById(element).appendChild(option);
+}
+
+//events on page load
+window.addEventListener("load", (event) => {
+    assignDropDown(); //dynamically fill dropboxes to select vertices for algorithms
+    getStoredWeight(); //get stored values for the weight boxes
+});
+
+document.getElementById("addNode").addEventListener("click", function () {
+    let newNumber = cy.nodes().length;
+    let newEdgeId = "n" + (newNumber - 1) + "n" + newNumber;
+    let connection = "n" + (newNumber - 1) + "TOn" + newNumber;
+    cy.add([
+        {
+            group: "nodes",
+            data: { id: "n" + newNumber },
+            position: { x: 100, y: 100 },
+        },
+        {
+            group: "edges",
+            data: {
+                id: newEdgeId,
+                source: "n" + (newNumber - 1),
+                target: "n" + newNumber,
+                weight: 1,
+            },
+        },
+    ]);
+    let newEdge = {
+        edgeId: "#" + newEdgeId,
+        weightInputId: connection,
+    };
+    edges.push(newEdge);
+    createWeightBox(connection);
+    addToDropDown("n" + newNumber, "dvNode1");
+    addToDropDown("n" + newNumber, "dvNode2");
 });
 

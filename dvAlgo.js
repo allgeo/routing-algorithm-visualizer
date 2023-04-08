@@ -1,32 +1,3 @@
-class GraphAdjacencyList {
-    constructor() {
-        this.nodes = new Map();
-    }
-
-    addNode(node) {
-        if (!this.nodes.has(node)) {
-            this.nodes.set(node, []);
-        }
-    }
-
-    addEdge(node1, node2, weight) {
-        if (this.nodes.has(node1) && this.nodes.has(node2)) {
-            this.nodes.get(node1).push({ node: node2, weight: weight });
-            this.nodes.get(node2).push({ node: node1, weight: weight });
-        }
-    }
-
-    // Print the graph in adjacency list format for visualization in console
-    printGraph() {
-        for (const [node, edges] of this.nodes.entries()) {
-            const connections = edges
-                .map((edge) => `${edge.node}(${edge.weight})`)
-                .join(", ");
-            console.log(`${node} -> ${connections}`);
-        }
-    }
-}
-
 function highlightPathAnimated(path) {
     let i = 0;
     animationRunning = true;
@@ -299,7 +270,7 @@ function getPath(start, destination, minCostMatrix) {
 
 
 
-// With bootstrap
+//=============================Code below used to create and update algorithm information while algorithm is running=========================================== 
 function createDistanceVectorTable(vertex, costMatrix) {
     // Get the container for distance vector tables
     let distanceVectorContainer = document.getElementById("currentDistanceVectorsContainer");
@@ -421,27 +392,18 @@ function createTables(costMatrix) {
 }
 
 function initializeAnnotations() {
-    if (document.getElementById("dvAnnotation")) {
-        let element = document.getElementById("dvAnnotation");
-        element.innerHTML = "";
-    }
-
-    if (document.getElementById("currentDistanceVectorsContainer")) {
-        let container = document.getElementById(
-            "currentDistanceVectorsContainer"
-        );
-        container.innerHTML = "";
-    }
-
-    //add annotation text box to explain what algorithm is doing at each step
+    //get annotations container for dv algo
     let dvAnnotationsContainer = document.getElementById(
         "dvAnnotationsContainer"
     );
+
+    //add h5 tag for annotation for dv algo
+    dvAnnotationsContainer.innerHTML = "";
     let annotation = document.createElement("h5");
     annotation.setAttribute("id", "dvAnnotation");
     annotation.innerHTML = "";
 
-    //add table container to html
+    //add table container to annotations container
     let currentDistanceVectorsContainer = document.createElement("div");
     currentDistanceVectorsContainer.setAttribute(
         "id",
@@ -456,6 +418,8 @@ function initializeAnnotations() {
     dvAnnotationsContainer.appendChild(currentDistanceVectorsContainer);
 }
 
+
+//===================Function to be called when dv algo is selected to be run ============================================
 function runDV(start, end) {
     //create a new Graph adjacency List
     const currentgraph = new GraphAdjacencyList();
@@ -481,68 +445,3 @@ function runDV(start, end) {
     );
 }
 
-//dynamically generate the drop down menus for DV algo
-function assignDropDown() {
-    nodelist = [];
-    cy.nodes().forEach(function (ele) {
-        nodelist.push(ele.id());
-    });
-    for (let i = 0; i < nodelist.length; i++) {
-        let option = document.createElement("option");
-        option.setAttribute("value", nodelist[i]);
-        let optionText = document.createTextNode(nodelist[i]);
-        option.appendChild(optionText);
-        document.getElementById("dvNode1").appendChild(option);
-    }
-    for (let i = 0; i < nodelist.length; i++) {
-        let option = document.createElement("option");
-        option.setAttribute("value", nodelist[i]);
-        let optionText = document.createTextNode(nodelist[i]);
-        option.appendChild(optionText);
-        document.getElementById("dvNode2").appendChild(option);
-    }
-}
-
-function addToDropDown(nodeId, element) {
-    let option = document.createElement("option");
-    option.setAttribute("value", nodeId);
-    let optionText = document.createTextNode(nodeId);
-    option.appendChild(optionText);
-    document.getElementById(element).appendChild(option);
-}
-
-//events on page load
-window.addEventListener("load", (event) => {
-    assignDropDown(); //dynamically fill DV dropboxes
-    getStoredWeight(); //get stored values for the weight boxes
-});
-
-document.getElementById("addNode").addEventListener("click", function () {
-    let newNumber = cy.nodes().length;
-    let newEdgeId = "n" + (newNumber - 1) + "n" + newNumber;
-    let connection = "n" + (newNumber - 1) + "TOn" + newNumber;
-    cy.add([
-        {
-            group: "nodes",
-            data: { id: "n" + newNumber },
-            position: { x: 100, y: 100 },
-        },
-        {
-            group: "edges",
-            data: {
-                id: newEdgeId,
-                source: "n" + (newNumber - 1),
-                target: "n" + newNumber,
-                weight: 1,
-            },
-        },
-    ]);
-    let newEdge = {
-        edgeId: "#" + newEdgeId,
-        weightInputId: connection,
-    };
-    edges.push(newEdge);
-    createWeightBox(connection);
-    addToDropDown("n" + newNumber, "dvNode1");
-    addToDropDown("n" + newNumber, "dvNode2");
-});
