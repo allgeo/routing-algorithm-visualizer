@@ -51,8 +51,8 @@ function highlightPathAnimated(path) {
 }
 
 //vars used to keep track of timeouts used in dvAlgo function for animations
-var graphIntervalId;
-var timeoutArr = [];
+var distVecGraphIntervalId;
+var distVecTimeoutArr = [];
 
 function initializeCostMatrix(adjacencyList) {
     let costMatrix = new Map();
@@ -101,7 +101,7 @@ function dvAlgo(adjacencyList, showPath, start, end) {
         let updatedCostMatrix = new Map();
 
         //update annotation
-        timeoutArr.push(
+        distVecTimeoutArr.push(
             setTimeout(() => {
                 document.getElementById("dvAnnotation").innerHTML =
                     "Each node with an updated distance vector will share its distance vector with each of its neighbors";
@@ -146,7 +146,7 @@ function dvAlgo(adjacencyList, showPath, start, end) {
                     changed: true,
                     distanceVector: updatedDV,
                 });
-                timeoutArr.push(
+                distVecTimeoutArr.push(
                     setTimeout(() => {
                         document.getElementById("dvAnnotation").innerHTML =
                             annotation;
@@ -165,7 +165,7 @@ function dvAlgo(adjacencyList, showPath, start, end) {
     }
 
     //update annotation
-    timeoutArr.push(
+    distVecTimeoutArr.push(
         setTimeout(() => {
             document.getElementById(
                 "dvAnnotation"
@@ -175,9 +175,9 @@ function dvAlgo(adjacencyList, showPath, start, end) {
 
     let path = getPath(start, end, costMatrix);
 
-    timeoutArr.push(
+    distVecTimeoutArr.push(
         setTimeout(() => {
-            graphIntervalId = setInterval(() => {
+            distVecGraphIntervalId = setInterval(() => {
                 showPath(path);
             }, 3000);
         }, startTimeout + 3000)
@@ -437,11 +437,15 @@ function runDV(start, end) {
     });
     //run Distance vector Algorithm
     initializeAnnotations();
-    let result2 = dvAlgo(
+    let result = dvAlgo(
         currentgraph,
         highlightPathAnimated,
         start,
         end
     );
+
+    let shortestPath = getPath(start, end, result);
+
+    return shortestPath;
 }
 

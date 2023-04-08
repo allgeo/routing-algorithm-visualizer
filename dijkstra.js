@@ -1,32 +1,4 @@
-class GraphAdjacencyList {
-    constructor() {
-        this.nodes = new Map();
-    }
-
-    addNode(node) {
-        if (!this.nodes.has(node)) {
-            this.nodes.set(node, []);
-        }
-    }
-
-    addEdge(node1, node2, weight) {
-        if (this.nodes.has(node1) && this.nodes.has(node2)) {
-            this.nodes.get(node1).push({ node: node2, weight: weight });
-            this.nodes.get(node2).push({ node: node1, weight: weight });
-        }
-    }
-
-    // Print the graph in adjacency list format for visualization in console
-    printGraph() {
-        for (const [node, edges] of this.nodes.entries()) {
-            const connections = edges
-                .map((edge) => `${edge.node}(${edge.weight})`)
-                .join(", ");
-            console.log(`${node} -> ${connections}`);
-        }
-    }
-
-}
+var dijkstaTimeoutArray = [];
 
 function dijkstra(graph, startNode, endNode){
     //Sets for visited nodes and unvisited nodes 
@@ -94,22 +66,22 @@ function dijkstra(graph, startNode, endNode){
     let timeout = 0;
     
     for(let i=0; i<minNodesUpdates.length; i++) {
-        setTimeout(() => {
+        dijkstaTimeoutArray.push(setTimeout(() => {
             document.getElementById("dijkstraAnnotation").innerHTML = (`Unvisted node with smallest distance is ${minNodesUpdates[i]}`)
             updateDijkstraTable(graph, visitedUpdates[i], unvisitedUpdates[i], predecessorUpdates[i], distancesUpdates[i+i])
-        }, timeout)
+        }, timeout))
 
-        setTimeout(() => {
+        dijkstaTimeoutArray.push(setTimeout(() => {
             document.getElementById("dijkstraAnnotation").innerHTML = (`Then for each univisited neighbour of ${minNodesUpdates[i]}, if the cost of traversing from ${startNode} to each neighbour through ${minNodesUpdates[i]} is less than the current distance to each neighbour, then the shortest distance is updated.`)
             updateDijkstraTable(graph, visitedUpdates[i], unvisitedUpdates[i], predecessorUpdates[i], distancesUpdates[i+i+1])
-        }, timeout + 3000)
+        }, timeout + 3000))
 
         timeout += 13000
     }
 
-    setTimeout(() => {
+    dijkstaTimeoutArray.push(setTimeout(() => {
         document.getElementById("dijkstraAnnotation").innerHTML = `Now that all nodes have been visted we can stop and the shortest distance from ${startNode} to all other nodes can been seen in the table.`
-    }, timeout - 3000);
+    }, timeout - 3000));
 
     
     
@@ -127,8 +99,8 @@ function dijkstra(graph, startNode, endNode){
     return {shortestDistToAllNodes: distances, predecessor, pathFromStartNodeToEndNode: path, distFromStartNodeToEndNode: distances.get(endNode) };
 }
 
-//NOT DONE
-function runDijkstra() {
+//===================Function to be called when dijkstra algo is selected to be run ============================================
+function runDijkstra(start, end) {
 
     const graph = new GraphAdjacencyList();
 
@@ -147,20 +119,15 @@ function runDijkstra() {
 
     initializeDijkstraAnnotations();
 
-    const result = dijkstra(graph, "n0", "n11");
+    const result = dijkstra(graph, start, end);
     const shortestPathNodes = result.pathFromStartNodeToEndNode;
     //console.log(result)
 
     return shortestPathNodes;// Should ideally return [ 'n0', 'n1', 'n2', 'n7', 'n8', 'n11' ] (shortest path from n0 to n11)
 }
 
-window.addEventListener("load", (event) => {
-    //assignDropDown(); //dynamically fill DV dropboxes
-    getStoredWeight(); //get stored values for the weight boxes
-    runDijkstra();
-  });
 
-
+//===========================Functions below used to initialize and update table and annotations for dijkstra==============================
 function createSetCopy(set) {
     let copy = new Set();
     for(let item of set) {
@@ -183,17 +150,11 @@ function createMapCopy(map) {
 }
 
 function initializeDijkstraAnnotations(){
-    if(document.getElementById("dijkstraAnnotation")) {
-        let element = document.getElementById("dijkstraAnnotation");
-        element.innerHTML = "";
-    } 
 
-    if(document.getElementById("dijkstraDisTableContainer")) {
-        let element = document.getElementById("dijkstraDisTableContainer");
-        element.innerHTML = "";
-    }
+    //get annotations container for dijkstra
+    let annotationsContainer = document.getElementById("dijkstraAnnotationsContainer");
+    annotationsContainer.innerHTML = "";
 
-    let annotationsContainer = document.getElementById("algoAnnotationsContainer");
     //create annotation to explain what is going on at each step of dijksta algo
     let dijkstraAnnotation = document.createElement("h5");
     dijkstraAnnotation.setAttribute("id", "dijkstraAnnotation");

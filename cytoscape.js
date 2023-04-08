@@ -75,7 +75,6 @@ var cy = (window.cy = cytoscape({
 }));
 
 var edges = [];
-var edges = [];
 
 //create the edge array dynamicallly from the cytoscape graph
 function fillEdges() {
@@ -87,7 +86,6 @@ function fillEdges() {
       edges.push(newEdge);
   });
 }
-fillEdges();
 fillEdges();
 
 function createWeightBox(edgeName) {
@@ -114,16 +112,14 @@ cy.edges().forEach(function (ele) {
 });
 
 // Add event listener to submit button
-// Add event listener to submit button
 document.getElementById("submitBtn").addEventListener("click", function () {
     // Loop through the edges array
     edges.forEach(function (edge) {
-        console.log = edge;
         // Get the weight value from input
         console.log(edge);
         var weight = document.getElementById(edge.weightInputId).value;
         if (isNaN(parseInt(weight))) {
-            //            console.log("Not a number, not updated")
+            console.log("Not a number, not updated")
         } else {
         // Store the weight value in localStorage
         localStorage.setItem(edge.weightInputId, weight);
@@ -251,8 +247,9 @@ document.getElementById("algoButton").addEventListener("click", function () {
   let start = document.getElementById("dvNode1").value;
   let end = document.getElementById("dvNode2").value;
   //clear timeouts
-  clearInterval(graphIntervalId);
-  timeoutArr.forEach(clearTimeout);
+  clearInterval(distVecGraphIntervalId);
+  distVecTimeoutArr.forEach(clearTimeout);
+  dijkstaTimeoutArray.forEach(clearTimeout);
   //find the value of the dropdown
   let e = document.getElementById("dropdown");
   var value = e.options[e.selectedIndex].value;
@@ -261,19 +258,17 @@ document.getElementById("algoButton").addEventListener("click", function () {
   {
       //clear any annotations for dv algo 
       document.getElementById("dvAnnotationsContainer").innerHTML = "";
-      console.log('dijkstra')
       //run Dijkstra goes here
+      let shortestPath = runDijkstra(start, end);
+      runAnimation(shortestPath);
   } 
   // else is DV
   else 
   {
-      runDV(start,end)
+      document.getElementById("dijkstraAnnotationsContainer").innerHTML = "";
+      let shortestPath = runDV(start,end);
+      runAnimation(shortestPath);
   } //run dv algo
-
-    //Test path, replace with path given by algorithms
-  let path = ["n0", "n1", "n2", "n7", "n6", "n5", "n4"];
-
-  runAnimation(path);
 
  
 });
