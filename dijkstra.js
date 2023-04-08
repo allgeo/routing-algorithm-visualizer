@@ -51,7 +51,6 @@ function dijkstra(graph, startNode, endNode){
     let distancesUpdates = []
     let minNodesUpdates = []
 
-
     //Loop through unvisited nodes finding node with least distance to previous node 
     while(unvisited.size > 0){
         let minNode = null; 
@@ -73,7 +72,6 @@ function dijkstra(graph, startNode, endNode){
         unvisitedUpdates.push(createSetCopy(unvisited));
         distancesUpdates.push(createMapCopy(distances));
         predecessorUpdates.push(createMapCopy(predecessor));
-
         //Unvisited neighbour nodes of current visited node 
         let neighbours = graph.nodes.get(minNode);
         //Loop through unvisited neighbor nodes 
@@ -90,19 +88,28 @@ function dijkstra(graph, startNode, endNode){
             }
         }
 
+        distancesUpdates.push(createMapCopy(distances));
     }
     
     let timeout = 0;
-
-    for(let i=0; i<distancesUpdates.length; i++) {
+    
+    for(let i=0; i<minNodesUpdates.length; i++) {
         setTimeout(() => {
             document.getElementById("dijkstraAnnotation").innerHTML = (`Unvisted node with smallest distance is ${minNodesUpdates[i]}`)
-            updateDijkstraTable(graph, visitedUpdates[i], unvisitedUpdates[i], predecessorUpdates[i], distancesUpdates[i])
+            updateDijkstraTable(graph, visitedUpdates[i], unvisitedUpdates[i], predecessorUpdates[i], distancesUpdates[i+i])
         }, timeout)
 
-        timeout += 3000;
+        setTimeout(() => {
+            document.getElementById("dijkstraAnnotation").innerHTML = (`Then for each univisited neighbour of ${minNodesUpdates[i]}, if the cost of traversing from ${startNode} to each neighbour through ${minNodesUpdates[i]} is less than the current distance to each neighbour, then the shortest distance is updated.`)
+            updateDijkstraTable(graph, visitedUpdates[i], unvisitedUpdates[i], predecessorUpdates[i], distancesUpdates[i+i+1])
+        }, timeout + 3000)
 
+        timeout += 13000
     }
+
+    setTimeout(() => {
+        document.getElementById("dijkstraAnnotation").innerHTML = `Now that all nodes have been visted we can stop and the shortest distance from ${startNode} to all other nodes can been seen in the table.`
+    }, timeout - 3000);
 
     
     
