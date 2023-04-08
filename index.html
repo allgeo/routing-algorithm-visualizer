@@ -96,8 +96,10 @@
                 
             <!-- Generating tables  -->
             <div style="margin: 20px 20px;">
+                <div id="algoAnnotationsContainer"></div>
                 <div id="dvAnnotationsContainer"></div>
             </div>
+                
 
             <br />
 
@@ -115,7 +117,11 @@
 
             <div class="row g-2" id="weightBoxes">
 
-                <br />
+            <br>
+            <div class="d-flex justify-content-between align-items-center">
+                <button type="submit" id="addNode" class="btn btn-dark btn-lg">
+                    Add Node
+                </button>
             </div>
             <div class="d-flex justify-content-between align-items-center">
                 <h5>Add Node</h5>
@@ -197,6 +203,9 @@
 
         <!-- Cytoscape script to generate the graph -->
         <script src="cytoscape.js"></script>
+        <!-- <script src="dvAlgo.js"></script> -->
+        <script src="dijkstra.js"></script>
+
         <script src="dvAlgo.js"></script>
 
         <!-- Bootstrap JS -->
