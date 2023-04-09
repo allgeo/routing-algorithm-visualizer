@@ -31,7 +31,7 @@ var cy = (window.cy = cytoscape({
       {
         selector: 'node.path-highlighted',
         style: {
-          'border-color': 'red',
+          'border-color': '#1E90FF',
           'border-width': '2px'
         }
       },
