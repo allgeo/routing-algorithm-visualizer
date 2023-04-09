@@ -254,7 +254,7 @@ function runAnimation(path){
 
   //Highlight nodes in between
   for (let i = 1; i < path.length - 1; i++) {
-    cy.style().selector("#" + path[i]).css({ 'background-color': 'grey', 'border-color': 'red', 'border-width': '2px' }).update();
+    cy.style().selector("#" + path[i]).css({ 'background-color': 'grey', 'border-color': '#1E90FF', 'border-width': '2px' }).update();
     
   }
 
