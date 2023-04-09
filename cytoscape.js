@@ -23,15 +23,15 @@ var cy = (window.cy = cytoscape({
         selector: "edge.highlighted",
         css: {
           "line-color": "#1E90FF",
-          "target-arrow-color": "#1E90FF",
-          "source-arrow-color": "#1E90FF",
+          "target-arrow-color": "#81D0ED",
+          "source-arrow-color": "#81D0ED",
           "z-index": 100
         }
       },
       {
         selector: 'node.path-highlighted',
         style: {
-          'border-color': '#1E90FF',
+          'border-color': '#81D0ED',
           'border-width': '2px'
         }
       },
@@ -254,7 +254,7 @@ function runAnimation(path){
 
   //Highlight nodes in between
   for (let i = 1; i < path.length - 1; i++) {
-    cy.style().selector("#" + path[i]).css({ 'background-color': 'grey', 'border-color': '#1E90FF', 'border-width': '2px' }).update();
+    cy.style().selector("#" + path[i]).css({ 'background-color': 'grey', 'border-color': '#81D0ED', 'border-width': '2px' }).update();
     
   }
 
