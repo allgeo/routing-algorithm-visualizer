@@ -22,9 +22,9 @@ var cy = (window.cy = cytoscape({
       {
         selector: "edge.highlighted",
         css: {
-          "line-color": "red",
-          "target-arrow-color": "red",
-          "source-arrow-color": "red",
+          "line-color": "#1E90FF",
+          "target-arrow-color": "#1E90FF",
+          "source-arrow-color": "#1E90FF",
           "z-index": 100
         }
       },
