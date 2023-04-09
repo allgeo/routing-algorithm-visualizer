@@ -365,5 +365,23 @@ document.getElementById("addNode").addEventListener("click", function () {
     addToDropDown("n" + newNumber, "dvNode2");
 });
 
+document.getElementById("removeNode").addEventListener("click", function () {
+  let target = document.getElementById("rNode").value;
+  let targetelement = cy.getElementById(target)
+  cy.remove(targetelement)
+});
 
+document.getElementById("addEdge").addEventListener("click", function () {
+  let n1 = document.getElementById("addEdge1").value;
+  let n2 = document.getElementById("addEdge2").value;
+  cy.add([
+    {
+      group: 'edges',
+      data: { id: n1+n2, source: n1, target: n2, weight: 1 } 
+    }
+  ]);
+  let edgeName = n1 + "TO" + n2;
+  createWeightBox(edgeName);
+  fillEdges();
+});
 
