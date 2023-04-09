@@ -120,6 +120,8 @@ document.getElementById("submitBtn").addEventListener("click", function () {
         var weight = document.getElementById(edge.weightInputId).value;
         if (isNaN(parseInt(weight))) {
             console.log("Not a number, not updated")
+        } else if (parseInt(weight) < 0){
+          console.log("Cannot have a weight less than 0")
         } else {
         // Store the weight value in localStorage
         localStorage.setItem(edge.weightInputId, weight);
