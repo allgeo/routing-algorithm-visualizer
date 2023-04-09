@@ -249,8 +249,8 @@ function runAnimation(path){
   let endNodeID = path[path.length - 1];
 
   // Highlight the starting and final node with new CSS classes
-  cy.style().selector("#" + startNodeID).css({ 'background-color': 'blue', 'border-color': 'red', 'border-width': '2px' }).update();
-  cy.style().selector("#" + endNodeID).css({ 'background-color': 'green', 'border-color': 'red', 'border-width': '2px' }).update();
+  cy.style().selector("#" + startNodeID).css({ 'background-color': '#82C463', 'border-color': '#82C463', 'border-width': '2px' }).update();
+  cy.style().selector("#" + endNodeID).css({ 'background-color': '#ED8181', 'border-color': '#ED8181', 'border-width': '2px' }).update();
 
   //Highlight nodes in between
   for (let i = 1; i < path.length - 1; i++) {
