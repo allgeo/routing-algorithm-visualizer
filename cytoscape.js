@@ -175,6 +175,11 @@ class GraphAdjacencyList {
 //====ANIMATION==============================================================================
 let animationRunning = false;
 
+//variables below used to keep track of the settimeout id's so that we can later clear them when the user re-runs any of the algorithms
+let animationTimeoutIds = []
+let animationIntervalId;
+
+
 function highlightPathAnimated(path) {
   let i = 0;
   animationRunning = true;
@@ -197,16 +202,16 @@ function highlightPathAnimated(path) {
       let startNode = cy.$("#" + path[2]);
       startNode.addClass("path-highlighted");
       i++;
-      setTimeout(highlightNext, 500); // highlight every 0.5 seconds
+      animationTimeoutIds.push(setTimeout(highlightNext, 500)); // highlight every 0.5 seconds
       
     }
     else {
-      setTimeout(function() {
+      animationTimeoutIds.push(setTimeout(function() {
         unhighlightEdges(); // remove all highlights after a short delay
-        setTimeout(function() {
+        animationTimeoutIds.push(setTimeout(function() {
           animationRunning = false;
-        }, 1000); // wait for 1 second before setting animationRunning to false
-      }, 1000); // wait for 1 second before unhighlighting
+        }, 1000)); // wait for 1 second before setting animationRunning to false
+      }, 1000)); // wait for 1 second before unhighlighting
     }
   }
   //Remove highlights
@@ -220,6 +225,13 @@ function unhighlightEdges() {
 }
 
 function runAnimation(path){
+  animationTimeoutIds.forEach(clearTimeout)
+  clearInterval(animationIntervalId)
+  unhighlightEdges()
+  
+  cy.nodes().forEach(node => {
+    node.css({});
+  })
   //Get first and last node
   let startNodeID = path[0];
   let endNodeID = path[path.length - 1];
@@ -234,7 +246,7 @@ function runAnimation(path){
     pathNode.addClass("path-highlighted")
   }
 
-  setInterval(function() {
+  animationIntervalId = setInterval(function() {
     if (!animationRunning) {
       highlightPathAnimated(path);
     }
