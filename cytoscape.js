@@ -232,7 +232,7 @@ function runAnimation(path){
 
   const numNodes = cy.nodes().size();
 
-  for (let i = 0; i < numNodes - 1; i++) {
+  for (let i = 0; i <= numNodes - 1; i++) {
   cy.style().selector("#n" + i).css({
     'background-color': 'grey',
     'border-color': 'transparent',
