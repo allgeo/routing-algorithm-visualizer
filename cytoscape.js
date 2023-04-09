@@ -8,6 +8,7 @@ var cy = (window.cy = cytoscape({
               content: "data(id)",
               "text-valign": "center",
               "text-halign": "center",
+              'background-color': 'grey',
           },
       },
       {
@@ -228,10 +229,21 @@ function runAnimation(path){
   animationTimeoutIds.forEach(clearTimeout)
   clearInterval(animationIntervalId)
   unhighlightEdges()
+
+  const numNodes = cy.nodes().size();
+
+  for (let i = 0; i < numNodes - 1; i++) {
+  cy.style().selector("#n" + i).css({
+    'background-color': 'grey',
+    'border-color': 'transparent',
+    'border-width': '0'
+  }).update();
+}
+
   
-  cy.nodes().forEach(node => {
-    node.css({});
-  })
+
+
+ 
   //Get first and last node
   let startNodeID = path[0];
   let endNodeID = path[path.length - 1];
@@ -242,8 +254,8 @@ function runAnimation(path){
 
   //Highlight nodes in between
   for (let i = 1; i < path.length - 1; i++) {
-    let pathNode = cy.$("#" + path[i]);
-    pathNode.addClass("path-highlighted")
+    cy.style().selector("#" + path[i]).css({ 'background-color': 'grey', 'border-color': 'red', 'border-width': '2px' }).update();
+    
   }
 
   animationIntervalId = setInterval(function() {
@@ -352,4 +364,6 @@ document.getElementById("addNode").addEventListener("click", function () {
     addToDropDown("n" + newNumber, "dvNode1");
     addToDropDown("n" + newNumber, "dvNode2");
 });
+
+
 
