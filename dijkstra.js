@@ -76,12 +76,12 @@ function dijkstra(graph, startNode, endNode){
             updateDijkstraTable(graph, visitedUpdates[i], unvisitedUpdates[i], predecessorUpdates[i], distancesUpdates[i+i+1])
         }, timeout + 3000))
 
-        timeout += 13000
+        timeout += 5000
     }
 
     dijkstaTimeoutArray.push(setTimeout(() => {
         document.getElementById("dijkstraAnnotation").innerHTML = `Now that all nodes have been visted we can stop and the shortest distance from ${startNode} to all other nodes can been seen in the table.`
-    }, timeout - 3000));
+    }, timeout - 1000));
 
     
     
