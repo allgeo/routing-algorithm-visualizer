@@ -183,7 +183,7 @@ function createDijkstraTable(graph, visted, unvisited, predecessors, distances) 
     vertexHeader.innerHTML = "Vertex";
 
     let vistedHeader =document.createElement("th");
-    vistedHeader.innerHTML ="Visted";
+    vistedHeader.innerHTML ="Visited";
 
     let distanceHeader = document.createElement("th");
     distanceHeader.innerHTML = "Distance";
@@ -210,9 +210,9 @@ function createDijkstraTable(graph, visted, unvisited, predecessors, distances) 
         let vistedEntry = document.createElement("td");
         
         if(visted.has(node)) {
-            vistedEntry.innerHTML = "Visted";
+            vistedEntry.innerHTML = "Visited";
         } else if (unvisited.has(node)) {
-            vistedEntry.innerHTML = "Not Visted";
+            vistedEntry.innerHTML = "Not Visited";
         }
 
         let distanceEntry = document.createElement("td");
@@ -257,9 +257,9 @@ function updateDijkstraTable(graph, visted, unvisited, predecessors, distances) 
         let vistedEntry = document.createElement("td");
         
         if(visted.has(node)) {
-            vistedEntry.innerHTML = "Visted";
+            vistedEntry.innerHTML = "Visited";
         } else if (unvisited.has(node)) {
-            vistedEntry.innerHTML = "Not Visted";
+            vistedEntry.innerHTML = "Not Visited";
         }
 
         let distanceEntry = document.createElement("td");
