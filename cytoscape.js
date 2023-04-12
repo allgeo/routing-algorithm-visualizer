@@ -321,6 +321,18 @@ function assignDropDown() {
     }
 }
 
+function resetDropDown() {
+  let startNodeDropDown = document.getElementById("dvNode1");
+  for(let i=startNodeDropDown.options.length-1; i>= 0; i--){
+    startNodeDropDown.remove(i);
+  }
+
+  let endNodeDropDown = document.getElementById("dvNode2");
+  for(let i=endNodeDropDown.options.length-1; i>=0; i--){
+    endNodeDropDown.remove(i);
+  }
+}
+
 function addToDropDown(nodeId, element) {
     let option = document.createElement("option");
     option.setAttribute("value", nodeId);
@@ -336,21 +348,28 @@ window.addEventListener("load", (event) => {
 });
 
 document.getElementById("addNode").addEventListener("click", function () {
-    let newNumber = cy.nodes().length;
-    let newEdgeId = "n" + (newNumber - 1) + "n" + newNumber;
-    let connection = "n" + (newNumber - 1) + "TOn" + newNumber;
+    let nodeNums = []
+    cy.nodes().forEach(node => {
+        let nodeNum = parseInt(node.id().slice(1));
+        nodeNums.push(nodeNum)
+    })
+    let newHighestNumberedNode = Math.max(...nodeNums) + 1;
+    let currentHighestNumberedNode = newHighestNumberedNode - 1
+    
+    let newEdgeId = "n" + (currentHighestNumberedNode) + "n" + newHighestNumberedNode;
+    let connection = "n" + (currentHighestNumberedNode) + "TOn" + newHighestNumberedNode;
     cy.add([
         {
             group: "nodes",
-            data: { id: "n" + newNumber },
+            data: { id: "n" + newHighestNumberedNode },
             position: { x: 100, y: 100 },
         },
         {
             group: "edges",
             data: {
                 id: newEdgeId,
-                source: "n" + (newNumber - 1),
-                target: "n" + newNumber,
+                source: "n" + (currentHighestNumberedNode),
+                target: "n" + newHighestNumberedNode,
                 weight: 1,
             },
         },
@@ -361,14 +380,17 @@ document.getElementById("addNode").addEventListener("click", function () {
     };
     edges.push(newEdge);
     createWeightBox(connection);
-    addToDropDown("n" + newNumber, "dvNode1");
-    addToDropDown("n" + newNumber, "dvNode2");
+    addToDropDown("n" + newHighestNumberedNode, "dvNode1");
+    addToDropDown("n" + newHighestNumberedNode, "dvNode2");
 });
 
 document.getElementById("removeNode").addEventListener("click", function () {
   let target = document.getElementById("rNode").value;
   let targetelement = cy.getElementById(target)
   cy.remove(targetelement)
+  //remove all items from dropdown and then regenerate drop down from updated graph
+  resetDropDown();
+  assignDropDown();
 });
 
 document.getElementById("addEdge").addEventListener("click", function () {
