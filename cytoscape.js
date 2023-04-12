@@ -180,45 +180,52 @@ let animationRunning = false;
 let animationTimeoutIds = []
 let animationIntervalId;
 
-
 function highlightPathAnimated(path) {
   let i = 0;
   animationRunning = true;
+  // Highlight the starting and final node
+  let startNode = cy.$("#" + path[0]);
+  startNode.addClass("start-highlighted");
+  let finalNode = cy.$("#" + path[path.length - 1]);
+  finalNode.addClass("end-highlighted");
 
   function highlightNext() {
-    if (i < path.length - 1) {
-      let edgeId;
-      //get the node numbers as an int
-      let n1 = parseInt(path[i].slice(1))
-      let n2 = parseInt(path[i+1].slice(1))
-      //Make sure that the node with the lower number goes first
-      if (n1 < n2) {
-        edgeId = path[i] + path[i + 1];
-      } 
-      else {
-        edgeId = path[i + 1] + path[i];
+      if (i < path.length - 1) {
+          let edgeId;
+          //get the node numbers as an int
+          let n1 = parseInt(path[i].slice(1));
+          let n2 = parseInt(path[i + 1].slice(1));
+          //Make sure that the node with the lower number goes first
+          if (n1 < n2) {
+              edgeId = path[i] + path[i + 1];
+          } else {
+              edgeId = path[i + 1] + path[i];
+          }
+          cy.$("#" + edgeId).addClass("highlighted");
+          i++;
+          setTimeout(highlightNext, 500); // highlight every 0.5 seconds
+      } else {
+          setTimeout(function () {
+              unhighlightEdges(); // remove all highlights after a short delay
+              setTimeout(function () {
+                  animationRunning = false;
+                  startNode.removeClass("start-highlighted");
+                  finalNode.removeClass("end-highlighted");
+              }, 1000); // wait for 1 second before setting animationRunning to false
+          }, 1000); // wait for 1 second before unhighlighting
       }
-      cy.$("#" + edgeId).addClass("highlighted");
-
-      let startNode = cy.$("#" + path[2]);
-      startNode.addClass("path-highlighted");
-      i++;
-      animationTimeoutIds.push(setTimeout(highlightNext, 500)); // highlight every 0.5 seconds
-      
-    }
-    else {
-      animationTimeoutIds.push(setTimeout(function() {
-        unhighlightEdges(); // remove all highlights after a short delay
-        animationTimeoutIds.push(setTimeout(function() {
-          animationRunning = false;
-        }, 1000)); // wait for 1 second before setting animationRunning to false
-      }, 1000)); // wait for 1 second before unhighlighting
-    }
   }
   //Remove highlights
-  cy.edges().removeClass("highlighted");
+  cy.elements().removeClass("highlighted");
   highlightNext();
+
+  function unhighlightEdges() {
+      // Remove the "highlighted" class from all edges
+      cy.edges().removeClass("highlighted");
+  }
 }
+
+
 
 function unhighlightEdges() {
   // Remove the "highlighted" class from all edges
@@ -239,10 +246,6 @@ function runAnimation(path){
     'border-width': '0'
   }).update();
 }
-
-  
-
-
  
   //Get first and last node
   let startNodeID = path[0];
