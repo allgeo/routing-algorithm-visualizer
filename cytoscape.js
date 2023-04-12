@@ -399,6 +399,23 @@ document.getElementById("removeNode").addEventListener("click", function () {
 document.getElementById("addEdge").addEventListener("click", function () {
   let n1 = document.getElementById("addEdge1").value;
   let n2 = document.getElementById("addEdge2").value;
+  let edgeAlreadyExists = false;
+  
+  //check if there is already an edge from n1 to n2, and if there is then don't add the edge
+  cy.edges().forEach(edge => {
+    let edgeInfo = edge.data();
+    let source = edgeInfo.source;
+    let target = edgeInfo.target;
+    
+    if(n1 === source && n2 === target || n1 === target && n2 === source){
+        edgeAlreadyExists = true;
+    }
+  })
+
+  if(edgeAlreadyExists){
+    return
+  }
+
   cy.add([
     {
       group: 'edges',
