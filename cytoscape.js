@@ -290,6 +290,7 @@ document.getElementById("algoButton").addEventListener("click", function () {
       //run Dijkstra goes here
       let shortestPath = runDijkstra(start, end);
       runAnimation(shortestPath);
+      console.log(shortestPath)
   } 
   // else is DV
   else 
@@ -389,8 +390,39 @@ document.getElementById("addNode").addEventListener("click", function () {
 
 document.getElementById("removeNode").addEventListener("click", function () {
   let target = document.getElementById("rNode").value;
-  let targetelement = cy.getElementById(target)
-  cy.remove(targetelement)
+  let targetelement;
+  
+  //if user only inputted one node then this means they want to delete a vertex
+  if(target.split("n").slice(1).length === 1) {
+    targetelement = cy.getElementById(target)
+    cy.remove(targetelement)
+  }
+  //if user inputted two nodes then this means they want to delete an edge
+  //so find source and target of edge and then remove it 
+  else if (target.split("n").slice(1).length === 2) {
+
+      let node1 = "n" + target.split("n").slice(1)[0];
+      let node2 = "n" + target.split("n").slice(1)[1];
+      cy.edges().forEach(edge => {
+          let edgeInfo = edge.data();
+          let source;
+          let end;
+
+          if(edgeInfo.source === node1 && edgeInfo.target === node2){
+            source = node1;
+            end = node2;
+            targetelement = cy.getElementById(`${source}${end}`)
+            cy.remove(targetelement)
+          } else if(edgeInfo.source === node2 && edgeInfo.target === node1) {
+              source = node2;
+              end = node1;
+              targetelement = cy.getElementById(`${source}${end}`)
+              cy.remove(targetelement)
+          }
+
+      });
+  }
+  
   //remove all items from dropdown and then regenerate drop down from updated graph
   resetDropDown();
   assignDropDown();
