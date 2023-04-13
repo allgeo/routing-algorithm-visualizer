@@ -394,8 +394,17 @@ document.getElementById("removeNode").addEventListener("click", function () {
   //if user only inputted one node then this means they want to delete a vertex
   if(target.split("n").slice(1).length === 1) {
     targetelement = cy.getElementById(target)
-    edges = edges.filter(edge => !edge.weightInputId.includes(target))
-    cy.remove(targetelement)
+
+    //create copy of cy graph
+    let cyCopy = createCopyOfGraph(cy);
+    cyCopy.remove(cyCopy.getElementById(target))
+
+    //if removing node in copy does not cause graph to become disconnected then remove item from graph
+    if(!isGraphDisconnected(cyCopy)) {
+      cy.remove(targetelement)
+      edges = edges.filter(edge => !edge.weightInputId.includes(target))
+
+    }
   }
   //if user inputted two nodes then this means they want to delete an edge
   //so find source and target of edge and then remove it 
@@ -411,15 +420,25 @@ document.getElementById("removeNode").addEventListener("click", function () {
           if(edgeInfo.source === node1 && edgeInfo.target === node2){
             source = node1;
             end = node2;
-            targetelement = cy.getElementById(`${source}${end}`)
-            edges = edges.filter(edge => edge.edgeId !== `#${source}${end}`)
-            cy.remove(targetelement)
           } else if(edgeInfo.source === node2 && edgeInfo.target === node1) {
-              source = node2;
-              end = node1;
-              targetelement = cy.getElementById(`${source}${end}`)
+            source = node2;
+            end = node1;
+          }
+
+          /*
+            if source and end node are not null then create copy of graph and check 
+            if removing edge causes graph to be disconnected
+          */
+          if(source && end) {
+            
+            targetelement = cy.getElementById(`${source}${end}`)
+            let cyCopy = createCopyOfGraph(cy);
+            cyCopy.remove(cyCopy.getElementById(`${source}${end}`))
+
+            if(!isGraphDisconnected(cyCopy)){
               edges = edges.filter(edge => edge.edgeId !== `#${source}${end}`)
               cy.remove(targetelement)
+            }
           }
 
       });
@@ -470,4 +489,62 @@ document.getElementById("addEdge").addEventListener("click", function () {
   createWeightBox(edgeName);
   fillEdges();
 });
+
+
+//======================= helper functions used for removing edges/vertices in graph =================================
+function getNeighours(graph, node) {
+  let neighbors = [];
+
+  graph.edges().forEach(edge => {
+    let edgeInfo = edge.data();
+    let source = edgeInfo.source;
+    let target = edgeInfo.target;
+    if(source === node) neighbors.push(target);
+    if(target === node) neighbors.push(source);
+  })
+
+  return neighbors;
+}
+
+function dfs(graph, start, visited = null) {
+  if(visited === null) {
+    visited = new Set();
+  }
+  visited.add(start);
+
+  let neighbours = getNeighours(graph, start);
+
+  neighbours.forEach(neighbour => {
+    if(!visited.has(neighbour)){
+      dfs(graph, neighbour, visited)
+    }
+  })
+
+  return visited;
+}
+
+function createCopyOfGraph(graph) {
+  let graphJson = graph.json();
+
+  let copy = cytoscape({
+    container: document.getElementById('copied-cy'),
+    elements: graphJson.elements,
+    style: graphJson.style,
+    layout: graphJson.layout
+  })
+
+  return copy;
+}
+
+function isGraphDisconnected(graph) {
+  let startNode = graph.edges()[0].data().target;
+
+  let reacheableNodes = dfs(graph, startNode);
+  console.log(reacheableNodes)
+  if(reacheableNodes.size !== graph.nodes().size()) {
+      return true;
+  } 
+  return false;
+}
+
 
