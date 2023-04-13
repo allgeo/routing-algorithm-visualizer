@@ -1,6 +1,6 @@
-## User Manuel
+## User Manual
 
-1. Update the Garph with the desired edge weights
+1. Update the Graph with the desired edge weights
 ![1updateGraph](https://user-images.githubusercontent.com/62227321/230799464-a36ae9b2-d230-479f-87d1-30ec3d24df86.gif)
 
 2. Choose one of the two Routing Algorithm
