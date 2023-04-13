@@ -290,7 +290,6 @@ document.getElementById("algoButton").addEventListener("click", function () {
       //run Dijkstra goes here
       let shortestPath = runDijkstra(start, end);
       runAnimation(shortestPath);
-      console.log(shortestPath)
   } 
   // else is DV
   else 
@@ -395,6 +394,7 @@ document.getElementById("removeNode").addEventListener("click", function () {
   //if user only inputted one node then this means they want to delete a vertex
   if(target.split("n").slice(1).length === 1) {
     targetelement = cy.getElementById(target)
+    edges = edges.filter(edge => !edge.weightInputId.includes(target))
     cy.remove(targetelement)
   }
   //if user inputted two nodes then this means they want to delete an edge
@@ -412,11 +412,13 @@ document.getElementById("removeNode").addEventListener("click", function () {
             source = node1;
             end = node2;
             targetelement = cy.getElementById(`${source}${end}`)
+            edges = edges.filter(edge => edge.edgeId !== `#${source}${end}`)
             cy.remove(targetelement)
           } else if(edgeInfo.source === node2 && edgeInfo.target === node1) {
               source = node2;
               end = node1;
               targetelement = cy.getElementById(`${source}${end}`)
+              edges = edges.filter(edge => edge.edgeId !== `#${source}${end}`)
               cy.remove(targetelement)
           }
 
@@ -426,6 +428,16 @@ document.getElementById("removeNode").addEventListener("click", function () {
   //remove all items from dropdown and then regenerate drop down from updated graph
   resetDropDown();
   assignDropDown();
+
+
+  //reset weightboxes
+  let weightBoxesContainer = document.getElementById("weightBoxes");
+  weightBoxesContainer.innerHTML = ""
+
+  cy.edges().forEach(function (ele) {
+    let edgeName = ele.source().id() + "TO" + ele.target().id();
+    createWeightBox(edgeName);
+  });
 });
 
 document.getElementById("addEdge").addEventListener("click", function () {
